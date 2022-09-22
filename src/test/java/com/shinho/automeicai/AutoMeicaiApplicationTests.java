@@ -34,17 +34,19 @@ class AutoMeicaiApplicationTests {
     private IMeicanTaskService meicanTaskService;
 
 
-    @Rollback(value = false)
-    @Transactional
+//    @Rollback(value = false)
+//    @Transactional
     @Test
     void test1(){
         MeicanTask entity = new MeicanTask();
-        entity.setMeicanAccountName("");
-        entity.setMeicanAccountPassword("");
+        entity.setUid(1L);
+        entity.setMeicanAccountName("1");
+        entity.setMeicanAccountPassword("2");
         entity.setOrderDate("2022-10-01");
         entity.setOrderName("test");
         entity.setOrderDish("鸡腿堡");
-        System.out.println(meicanTaskService.save(entity));
+//        System.out.println(meicanTaskService.save(entity));
+        System.out.println(meicanTaskService.list());
     }
 
 }

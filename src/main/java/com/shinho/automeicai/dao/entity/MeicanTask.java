@@ -6,10 +6,13 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * <p>
@@ -19,6 +22,7 @@ import lombok.Setter;
  * @author liyongbing
  * @since 2022-09-22
  */
+@ToString
 @Getter
 @Setter
 @TableName("meican_task")
@@ -27,7 +31,7 @@ public class MeicanTask implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(type = IdType.ASSIGN_ID)
+    @TableId(type = IdType.AUTO)
     private Long uid;
 
     private String meicanAccountName;
@@ -42,9 +46,9 @@ public class MeicanTask implements Serializable {
 
     private String orderStatus;
 
-    private LocalDateTime createDate;
+    private Date createDate;
 
-    private LocalDateTime updateDate;
+    private Date updateDate;
 
     @TableLogic
     private Integer deleted;
