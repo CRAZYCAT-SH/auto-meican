@@ -1,0 +1,254 @@
+获取日历明细
+GET /forward/api/v2.1/calendarItems/all?client_id=Xqr8w0Uk4ciodqfPwjhav5rdxTaYepD&client_secret=vD11O6xI9bG3kqYRu9OyPAHkRGxLh4E&withOrderDetail=false&beginDate=2022-09-22&endDate=2022-09-22 HTTP/1.1
+Accept: application/json, text/plain, */*
+Accept-Encoding: gzip, deflate, br
+Accept-Language: zh
+Authorization: Bearer E1gtBiMG4dKlZqucCyEu5cLZ05nsqVK
+Cache-Control: no-cache
+Connection: keep-alive
+Cookie: machineId=14cdf0a3-168d-48a7-bc5c-cf77cfba645a; guestId=f7777802-4c7e-47ea-9259-7e6d2ca805c1; remember=21d9a653c4550e69b0339640a68bf23d58c61865-2413865; cna=5a7888920d954a5e800b525e7e68fec0; CNZZDATA1259914292=411415993-1633913186-%7C1648078433; PLAY_FLASH="inner_authorized=true"; AWSALB=cSYjPI2vhfuM7E/gbF5Pzrmcev3gA4UPMivFhEEUfEem7pcK5MxFNjY8EBHc6OyNLx7EtVkZf6iSf6ZVNWgzN5Okn8e4HJruS+k0Y5dozUXTiJ1WqLhHcPE0ZmZY; AWSALBCORS=cSYjPI2vhfuM7E/gbF5Pzrmcev3gA4UPMivFhEEUfEem7pcK5MxFNjY8EBHc6OyNLx7EtVkZf6iSf6ZVNWgzN5Okn8e4HJruS+k0Y5dozUXTiJ1WqLhHcPE0ZmZY
+Expires: 0
+Host: www.meican.com
+Pragma: no-cache
+Referer: https://www.meican.com/?key=3c059203-bd15-4918-a797-035cf5386abeX1663812000000
+Sec-Fetch-Dest: empty
+Sec-Fetch-Mode: cors
+Sec-Fetch-Site: same-origin
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36
+sec-ch-ua: "Google Chrome";v="105", "Not)A;Brand";v="8", "Chromium";v="105"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "Windows"
+
+HTTP/1.1 200 OK
+Content-Encoding: gzip
+Content-Type: application/json; charset=utf-8
+Date: Thu, 22 Sep 2022 01:32:14 GMT
+etag: W/"739-fkYioSkEPcApHNqLud6opX5f2DY"
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+Vary: Accept-Encoding
+x-amz-apigw-id: Y1osuFmeBTIFegQ=
+x-amzn-Remapped-content-length: 1849
+x-amzn-RequestId: 10d75d40-e4a1-4425-928c-52c623979083
+X-Amzn-Trace-Id: Root=1-632bbb1e-7d0f90c0108199893f6c65f5;Sampled=0
+x-powered-by: Express
+Content-Length: 744
+Connection: keep-alive
+
+{"startDate":"2022-09-22","endDate":"2022-09-22","dateList":[{"date":"2022-09-22","calendarItemList":[{"targetTime":1663812000000,"title":"欣和企业午餐","userTab":{"corp":{"uniqueId":"149100","useCloset":false,"name":"欣和企业","namespace":"149100","priceVisible":false,"showPrice":false,"priceLimit":40,"priceLimitInCent":4000,"acceptCashPaymentToMeican":false,"alwaysOpen":false,"addressList":[{"uniqueId":"9a685dc748e5","address":"上海市长宁区天山西路789号中山国际广场B座3楼","corpAddressCode":"A","pickUpLocation":"长宁区天山西路789号中山国际广场B座3楼"}],"isAdmin":false},"latitude":null,"longitude":null,"name":"欣和企业","lastUsedTime":1583396474000,"uniqueId":"3c059203-bd15-4918-a797-035cf5386abe"},"openingTime":{"uniqueId":"dba5c6655d26","name":"午餐","openTime":"00:00","closeTime":"10:00","defaultAlarmTime":"09:30","postboxOpenTime":"11:30"},"corpOrderUser":null,"status":"AVAILABLE","reason":""},{"targetTime":1663837200000,"title":"欣和企业晚餐","userTab":{"corp":{"uniqueId":"670188","useCloset":false,"name":"欣和企业","namespace":"670188","priceVisible":false,"showPrice":false,"priceLimit":30,"priceLimitInCent":3000,"acceptCashPaymentToMeican":false,"alwaysOpen":false,"addressList":[{"uniqueId":"624f49f3a9b1","address":"长宁区天山西路789号中山国际广场B座2楼","corpAddressCode":"A","pickUpLocation":"长宁区天山西路789号中山国际广场B座3楼"}],"isAdmin":false},"latitude":null,"longitude":null,"name":"欣和企业","lastUsedTime":1583396515000,"uniqueId":"96705179-e9c8-47d3-947c-9acdbc519d8a"},"openingTime":{"uniqueId":"7275048edc64","name":"晚餐","openTime":"13:00","closeTime":"17:00","defaultAlarmTime":"16:30","postboxOpenTime":"18:30"},"corpOrderUser":null,"status":"CLOSED","reason":"抱歉，目前没有供餐的餐厅"}]}]}
+
+
+获取餐厅
+GET /forward/api/v2.1/restaurants/list?client_id=Xqr8w0Uk4ciodqfPwjhav5rdxTaYepD&client_secret=vD11O6xI9bG3kqYRu9OyPAHkRGxLh4E&tabUniqueId=3c059203-bd15-4918-a797-035cf5386abe&targetTime=2022-09-22+10:00 HTTP/1.1
+Accept: application/json, text/plain, */*
+Accept-Encoding: gzip, deflate, br
+Accept-Language: zh
+Authorization: Bearer E1gtBiMG4dKlZqucCyEu5cLZ05nsqVK
+Cache-Control: no-cache
+Connection: keep-alive
+Cookie: machineId=14cdf0a3-168d-48a7-bc5c-cf77cfba645a; guestId=f7777802-4c7e-47ea-9259-7e6d2ca805c1; remember=21d9a653c4550e69b0339640a68bf23d58c61865-2413865; cna=5a7888920d954a5e800b525e7e68fec0; CNZZDATA1259914292=411415993-1633913186-%7C1648078433; PLAY_FLASH="inner_authorized=true"; AWSALB=cSYjPI2vhfuM7E/gbF5Pzrmcev3gA4UPMivFhEEUfEem7pcK5MxFNjY8EBHc6OyNLx7EtVkZf6iSf6ZVNWgzN5Okn8e4HJruS+k0Y5dozUXTiJ1WqLhHcPE0ZmZY; AWSALBCORS=cSYjPI2vhfuM7E/gbF5Pzrmcev3gA4UPMivFhEEUfEem7pcK5MxFNjY8EBHc6OyNLx7EtVkZf6iSf6ZVNWgzN5Okn8e4HJruS+k0Y5dozUXTiJ1WqLhHcPE0ZmZY
+Expires: 0
+Host: www.meican.com
+Pragma: no-cache
+Referer: https://www.meican.com/?key=3c059203-bd15-4918-a797-035cf5386abeX1663812000000
+Sec-Fetch-Dest: empty
+Sec-Fetch-Mode: cors
+Sec-Fetch-Site: same-origin
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36
+sec-ch-ua: "Google Chrome";v="105", "Not)A;Brand";v="8", "Chromium";v="105"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "Windows"
+
+
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Date: Thu, 22 Sep 2022 01:32:14 GMT
+etag: W/"2b5-BWigy3nSCQS0iN9pEqpjbJr/2Ds"
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+x-amz-apigw-id: Y1oszEL_hTIFTEw=
+x-amzn-Remapped-content-length: 693
+x-amzn-RequestId: 701d99d3-ab08-414f-9be7-13b5abc36752
+X-Amzn-Trace-Id: Root=1-632bbb1e-38a2b1156328833b1282139d;Sampled=0
+x-powered-by: Express
+Content-Length: 693
+Connection: keep-alive
+
+{"noMore":true,"targetTime":"2022-09-22 10:00:00","restaurantList":[{"uniqueId":"58b187","name":"鑫旺饭庄","tel":"15901830138","rating":3,"deliveryRangeMeter":null,"minimumOrder":0,"latitude":31.280041,"longitude":121.482914,"warning":"","openingTime":"","onlinePayment":true,"open":false,"availableDishCount":0,"dishLimit":65,"restaurantStatus":2,"remarkEnabled":false},{"uniqueId":"360148","name":"德克士(纪翟路店)","tel":"18621650859","rating":2,"deliveryRangeMeter":null,"minimumOrder":0,"latitude":31.241198,"longitude":121.27005,"warning":"","openingTime":"","onlinePayment":true,"open":true,"availableDishCount":12,"dishLimit":55,"restaurantStatus":0,"remarkEnabled":false}]}
+
+获取菜品
+
+GET /preorder/api/v2.1/recommendations/dishes?tabUniqueId=3c059203-bd15-4918-a797-035cf5386abe&targetTime=2022-09-22+10:00&client_id=Xqr8w0Uk4ciodqfPwjhav5rdxTaYepD&client_secret=vD11O6xI9bG3kqYRu9OyPAHkRGxLh4E HTTP/1.1
+Accept: application/json, text/plain, */*
+Accept-Encoding: gzip, deflate, br
+Accept-Language: zh
+Cache-Control: no-cache
+Connection: keep-alive
+Cookie: machineId=14cdf0a3-168d-48a7-bc5c-cf77cfba645a; guestId=f7777802-4c7e-47ea-9259-7e6d2ca805c1; remember=21d9a653c4550e69b0339640a68bf23d58c61865-2413865; cna=5a7888920d954a5e800b525e7e68fec0; CNZZDATA1259914292=411415993-1633913186-%7C1648078433; PLAY_FLASH="inner_authorized=true"; AWSALB=cSYjPI2vhfuM7E/gbF5Pzrmcev3gA4UPMivFhEEUfEem7pcK5MxFNjY8EBHc6OyNLx7EtVkZf6iSf6ZVNWgzN5Okn8e4HJruS+k0Y5dozUXTiJ1WqLhHcPE0ZmZY; AWSALBCORS=cSYjPI2vhfuM7E/gbF5Pzrmcev3gA4UPMivFhEEUfEem7pcK5MxFNjY8EBHc6OyNLx7EtVkZf6iSf6ZVNWgzN5Okn8e4HJruS+k0Y5dozUXTiJ1WqLhHcPE0ZmZY
+Expires: 0
+Host: www.meican.com
+Pragma: no-cache
+Referer: https://www.meican.com/?key=3c059203-bd15-4918-a797-035cf5386abeX1663812000000
+Sec-Fetch-Dest: empty
+Sec-Fetch-Mode: cors
+Sec-Fetch-Site: same-origin
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36
+sec-ch-ua: "Google Chrome";v="105", "Not)A;Brand";v="8", "Chromium";v="105"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "Windows"
+
+HTTP/1.1 200 OK
+Cache-Control: no-cache
+Content-Encoding: gzip
+Content-Type: application/json; charset=UTF-8
+Date: Thu, 22 Sep 2022 01:32:14 GMT
+Set-Cookie: PLAY_FLASH="inner_authorized=true"; Path=/
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+Vary: Accept-Encoding
+Content-Length: 510
+Connection: keep-alive
+
+{"myRegularDishList":[{"dishSectionId":0,"id":215465245,"isSection":false,"name":"菠萝鸡腿堡套餐(配香辣鸡翅2个60g\u0026魔法鸡块6块60g\u0026饮料/欣和专供 )","originalPriceInCent":3800,"priceInCent":3800,"priceString":"38","restaurant":{"name":"德克士(纪翟路店)","uniqueId":"360148","available":true}}],"othersRegularDishList":[{"dishSectionId":0,"id":215465248,"isSection":false,"name":"香煎脆皮鸡腿饭套餐(配香辣鸡翅2个60g\u0026辣味啃骨鸡1份60g\u0026饮料/欣和专供 )","originalPriceInCent":3800,"priceInCent":3800,"priceString":"38","restaurant":{"name":"德克士(纪翟路店)","uniqueId":"360148","available":true}},{"dishSectionId":0,"id":215465247,"isSection":false,"name":"脆皮手枪腿套餐(配德克士鸡块6块80g\u0026孜然鸡柳6根60g\u0026饮料/欣和专供 )","originalPriceInCent":3800,"priceInCent":3800,"priceString":"38","restaurant":{"name":"德克士(纪翟路店)","uniqueId":"360148","available":true}},{"dishSectionId":0,"id":215465243,"isSection":false,"name":"柠香鸡腿堡套餐(配脆皮炸鸡1个110g\u0026德克士鸡块6块6块80g\u0026饮料/欣和专供 )","originalPriceInCent":3800,"priceInCent":3800,"priceString":"38","restaurant":{"name":"德克士(纪翟路店)","uniqueId":"360148","available":true}},{"dishSectionId":0,"id":215465244,"isSection":false,"name":"椒香鸡腿堡套餐(微辣/配香辣鸡翅2个60g\u0026孜然鸡柳6根60g\u0026饮料/欣和专供  )","originalPriceInCent":3800,"priceInCent":3800,"priceString":"38","restaurant":{"name":"德克士(纪翟路店)","uniqueId":"360148","available":true}},{"dishSectionId":0,"id":215465246,"isSection":false,"name":"南阳炸鸡卷套餐(配脆皮炸鸡1个110g\u0026辣味啃骨鸡1份60g\u0026饮料/欣和专供 )","originalPriceInCent":3800,"priceInCent":3800,"priceString":"38","restaurant":{"name":"德克士(纪翟路店)","uniqueId":"360148","available":true}}],"othersRegularDishListSource":"TODAY_ORDER","showPrice":false}
+
+
+加车
+POST /forward/api/preorder/cart/update?client_id=Xqr8w0Uk4ciodqfPwjhav5rdxTaYepD&client_secret=vD11O6xI9bG3kqYRu9OyPAHkRGxLh4E HTTP/1.1
+Accept: application/json, text/plain, */*
+Accept-Encoding: gzip, deflate, br
+Accept-Language: zh
+Authorization: Bearer E1gtBiMG4dKlZqucCyEu5cLZ05nsqVK
+Cache-Control: no-cache
+Connection: keep-alive
+Content-Length: 391
+Content-Type: application/json
+Cookie: machineId=14cdf0a3-168d-48a7-bc5c-cf77cfba645a; guestId=f7777802-4c7e-47ea-9259-7e6d2ca805c1; remember=21d9a653c4550e69b0339640a68bf23d58c61865-2413865; cna=5a7888920d954a5e800b525e7e68fec0; CNZZDATA1259914292=411415993-1633913186-%7C1648078433; PLAY_FLASH="inner_authorized=true"; AWSALB=cSYjPI2vhfuM7E/gbF5Pzrmcev3gA4UPMivFhEEUfEem7pcK5MxFNjY8EBHc6OyNLx7EtVkZf6iSf6ZVNWgzN5Okn8e4HJruS+k0Y5dozUXTiJ1WqLhHcPE0ZmZY; AWSALBCORS=cSYjPI2vhfuM7E/gbF5Pzrmcev3gA4UPMivFhEEUfEem7pcK5MxFNjY8EBHc6OyNLx7EtVkZf6iSf6ZVNWgzN5Okn8e4HJruS+k0Y5dozUXTiJ1WqLhHcPE0ZmZY
+Expires: 0
+Host: www.meican.com
+Origin: https://www.meican.com
+Pragma: no-cache
+Referer: https://www.meican.com/?key=3c059203-bd15-4918-a797-035cf5386abeX1663812000000&re=360148
+Sec-Fetch-Dest: empty
+Sec-Fetch-Mode: cors
+Sec-Fetch-Site: same-origin
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36
+sec-ch-ua: "Google Chrome";v="105", "Not)A;Brand";v="8", "Chromium";v="105"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "Windows"
+
+
+{"3c059203-bd15-4918-a797-035cf5386abe/2022-09-22 10:00":{"dishes":[{"corpRestaurantId":"360148","count":1,"name":"柠香鸡腿堡套餐(配脆皮炸鸡1个110g&德克士鸡块6块6块80g&饮料/欣和专供 )","priceInCent":3800,"revisionId":215465243}],"corpName":"欣和企业","tabUUID":"3c059203-bd15-4918-a797-035cf5386abe","tabName":"欣和企业午餐","operativeDate":"2022-09-22"}}
+
+
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Date: Thu, 22 Sep 2022 01:32:21 GMT
+etag: W/"1c7-36v8lx9XpLGbTrRJl+Mjd99UTzM"
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+x-amz-apigw-id: Y1ot2HOYBTIFa6Q=
+x-amzn-Remapped-content-length: 455
+x-amzn-RequestId: 9d33ba86-ec21-48fb-8677-b90be58bb649
+X-Amzn-Trace-Id: Root=1-632bbb25-710d7ce708d443a745ca3ed8;Sampled=0
+x-powered-by: Express
+Content-Length: 455
+Connection: keep-alive
+
+{"3c059203-bd15-4918-a797-035cf5386abe/2022-09-22 10:00":{"corpId":0,"corpName":"欣和企业","tabUUID":"3c059203-bd15-4918-a797-035cf5386abe","tabName":"欣和企业午餐","tabOpen":"","tabClose":"","dishes":[{"name":"柠香鸡腿堡套餐(配脆皮炸鸡1个110g&德克士鸡块6块6块80g&饮料/欣和专供 )","revisionId":215465243,"count":1,"priceInCent":3800,"corpRestaurantId":"360148"}],"operativeDate":"2022-09-22","generateTime":1663810341}}
+
+
+获取地址
+GET /forward/api/v2.1/corpaddresses/getmulticorpaddress?client_id=Xqr8w0Uk4ciodqfPwjhav5rdxTaYepD&client_secret=vD11O6xI9bG3kqYRu9OyPAHkRGxLh4E&namespace=149100 HTTP/1.1
+Accept: application/json, text/plain, */*
+Accept-Encoding: gzip, deflate, br
+Accept-Language: zh
+Authorization: Bearer E1gtBiMG4dKlZqucCyEu5cLZ05nsqVK
+Cache-Control: no-cache
+Connection: keep-alive
+Cookie: machineId=14cdf0a3-168d-48a7-bc5c-cf77cfba645a; guestId=f7777802-4c7e-47ea-9259-7e6d2ca805c1; remember=21d9a653c4550e69b0339640a68bf23d58c61865-2413865; cna=5a7888920d954a5e800b525e7e68fec0; CNZZDATA1259914292=411415993-1633913186-%7C1648078433; PLAY_FLASH="inner_authorized=true"; AWSALB=cSYjPI2vhfuM7E/gbF5Pzrmcev3gA4UPMivFhEEUfEem7pcK5MxFNjY8EBHc6OyNLx7EtVkZf6iSf6ZVNWgzN5Okn8e4HJruS+k0Y5dozUXTiJ1WqLhHcPE0ZmZY; AWSALBCORS=cSYjPI2vhfuM7E/gbF5Pzrmcev3gA4UPMivFhEEUfEem7pcK5MxFNjY8EBHc6OyNLx7EtVkZf6iSf6ZVNWgzN5Okn8e4HJruS+k0Y5dozUXTiJ1WqLhHcPE0ZmZY
+Expires: 0
+Host: www.meican.com
+Pragma: no-cache
+Referer: https://www.meican.com/?key=3c059203-bd15-4918-a797-035cf5386abeX1663812000000&re=360148
+Sec-Fetch-Dest: empty
+Sec-Fetch-Mode: cors
+Sec-Fetch-Site: same-origin
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36
+sec-ch-ua: "Google Chrome";v="105", "Not)A;Brand";v="8", "Chromium";v="105"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "Windows"
+
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Date: Thu, 22 Sep 2022 01:32:23 GMT
+etag: W/"2bf-EFOvsrYOr3IMl/TsdFgOYA67a48"
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+x-amz-apigw-id: Y1ouJGflhTIFV1Q=
+x-amzn-Remapped-content-length: 703
+x-amzn-RequestId: 039bcda4-7f19-4396-b78e-1e5298ca5145
+X-Amzn-Trace-Id: Root=1-632bbb27-0f50047a2bf15b0d183eef6c;Sampled=0
+x-powered-by: Express
+Content-Length: 703
+Connection: keep-alive
+
+{"resultCode":"OK","resultDescription":"SUCCESS","data":{"addressList":[{"finalValue":{"pickUpLocation":"长宁区天山西路789号中山国际广场B座3楼","uniqueId":"9a685dc748e5"},"name":"长宁区天山西路789号中山国际广场B座3楼","sub":[]}],"fullPlaceholder":"填写详细地点","otherList":[],"placeholder":"","useCorpAddressRemark":false,"useMultiCorpAddress":false,"recentList":[{"address":"上海市长宁区天山西路789号中山国际广场B座3楼","timestamp":"2022-09-22 00:03:49","lastUsedTime":"2022-09-22 00:03:49","remark":"","corpAddressId":21256,"userId":2413865,"uniqueId":"9a685dc748e5","pickUpLocation":"长宁区天山西路789号中山国际广场B座3楼"}]}}
+
+
+下单
+POST /forward/api/v2.1/orders/add?client_id=Xqr8w0Uk4ciodqfPwjhav5rdxTaYepD&client_secret=vD11O6xI9bG3kqYRu9OyPAHkRGxLh4E HTTP/1.1
+Accept: application/json, text/plain, */*
+Accept-Encoding: gzip, deflate, br
+Accept-Language: zh
+Authorization: Bearer E1gtBiMG4dKlZqucCyEu5cLZ05nsqVK
+Cache-Control: no-cache
+Connection: keep-alive
+Content-Length: 245
+Content-Type: application/x-www-form-urlencoded
+Cookie: machineId=14cdf0a3-168d-48a7-bc5c-cf77cfba645a; guestId=f7777802-4c7e-47ea-9259-7e6d2ca805c1; remember=21d9a653c4550e69b0339640a68bf23d58c61865-2413865; cna=5a7888920d954a5e800b525e7e68fec0; CNZZDATA1259914292=411415993-1633913186-%7C1648078433; PLAY_FLASH="inner_authorized=true"; AWSALB=cSYjPI2vhfuM7E/gbF5Pzrmcev3gA4UPMivFhEEUfEem7pcK5MxFNjY8EBHc6OyNLx7EtVkZf6iSf6ZVNWgzN5Okn8e4HJruS+k0Y5dozUXTiJ1WqLhHcPE0ZmZY; AWSALBCORS=cSYjPI2vhfuM7E/gbF5Pzrmcev3gA4UPMivFhEEUfEem7pcK5MxFNjY8EBHc6OyNLx7EtVkZf6iSf6ZVNWgzN5Okn8e4HJruS+k0Y5dozUXTiJ1WqLhHcPE0ZmZY
+Expires: 0
+Host: www.meican.com
+Origin: https://www.meican.com
+Pragma: no-cache
+Referer: https://www.meican.com/?key=3c059203-bd15-4918-a797-035cf5386abeX1663812000000&re=360148
+Sec-Fetch-Dest: empty
+Sec-Fetch-Mode: cors
+Sec-Fetch-Site: same-origin
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36
+sec-ch-ua: "Google Chrome";v="105", "Not)A;Brand";v="8", "Chromium";v="105"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "Windows"
+
+tabUniqueId=3c059203-bd15-4918-a797-035cf5386abe&order=[{"count":1,"dishId":215465243}]&remarks=[{"dishId":"215465243","remark":""}]&targetTime=2022-09-22 10:00&userAddressUniqueId=9a685dc748e5&corpAddressUniqueId=9a685dc748e5&corpAddressRemark=
+
+
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Date: Thu, 22 Sep 2022 01:32:23 GMT
+etag: W/"a3-rB/dHqddbKlm9ybAMIJuciBIdCY"
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+x-amz-apigw-id: Y1ouNE7BBTIFWtg=
+x-amzn-Remapped-content-length: 163
+x-amzn-RequestId: 93e61cf3-b204-4017-bd35-0e1b26b3b396
+X-Amzn-Trace-Id: Root=1-632bbb27-13372f7d2fb162d411fd6e91;Sampled=0
+x-powered-by: Express
+Content-Length: 163
+Connection: keep-alive
+
+
+{"message":"","order":{"uniqueId":"7fc8d0c94d79","legacyPayStatus":{"isLegacyPay":true,"payStatus":"","monopolyPaymentVersion":"UNDEFINED"}},"status":"SUCCESSFUL"}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
