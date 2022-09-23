@@ -11,7 +11,6 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
-import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
@@ -36,23 +35,25 @@ public abstract class AbstractMeicanExecutor<T extends BaseRequest, D> implement
     @Resource
     protected RestTemplate restTemplate;
     @Resource
-    protected TokenService tokenService;
+    protected AuthService authService;
 
 
     @SneakyThrows
     @Override
     public D execute(T param) {
-        String token = tokenService.getToken(param);
-        if (!StringUtils.hasText(token)) {
-            throw new RuntimeException("获取token 为空");
-        }
         MultiValueMap<String, String> headers = new HttpHeaders();
         headers.add("Accept", "application/json, text/plain, */*");
-//        headers.add("Content-Type", "application/x-www-form-urlencoded");
         headers.add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36");
-        headers.add("Authorization", "Bearer " + token);
         headers.add("Cache-Control", "no-cache");
         headers.add("Connection", "keep-alive");
+        AuthService.AuthInfo authInfo = authService.auth(param);
+        if (authInfo == null) {
+            throw new RuntimeException("获取授权为空");
+        }
+        headers.add("Cookie", authInfo.getCookie());
+        if (needToken()) {
+            headers.add("Authorization", "Bearer " + authInfo.getToken());
+        }
         prepareHeaders(headers);
         Map<String, String> urlParams = Optional.ofNullable(prepareUrlParams(param)).orElse(new HashMap<>());
         urlParams.put("client_id", configProperties.getClient_id());
@@ -61,20 +62,24 @@ public abstract class AbstractMeicanExecutor<T extends BaseRequest, D> implement
         HttpMethod httpMethod = getHttpMethod();
         String body = prepareBodyParam(param);
         RequestEntity<String> requestEntity = new RequestEntity<>(body, headers, httpMethod, new URI(url));
-        ResponseEntity<D> responseEntity = restTemplate.exchange(requestEntity, getResultClass());
-        log.info("response:[{}]", responseEntity);
-        if (responseEntity.getStatusCode().is2xxSuccessful()) {
-            return responseEntity.getBody();
-        } else {
-            throw new RuntimeException("请求美餐api异常" + responseEntity);
+        log.info("========================================");
+        log.info("request meican api:[{}]", requestEntity);
+        try {
+            ResponseEntity<String> responseEntity = restTemplate.exchange(requestEntity, String.class);
+            log.info("response meican api:[{}]", responseEntity);
+            log.info("========================================");
+            if (responseEntity.getStatusCode().is2xxSuccessful()) {
+                return parseResult(responseEntity.getBody());
+            } else {
+                throw new RuntimeException("error:" + responseEntity);
+            }
+        } catch (RuntimeException e) {
+            throw new RuntimeException("请求美餐api异常:" + e.getMessage());
         }
     }
 
-    protected String prepareBodyParam(T param) {
-        return null;
-    }
 
-    protected abstract Class<D> getResultClass();
+    protected abstract D parseResult(String body);
 
     protected abstract HttpMethod getHttpMethod();
 
@@ -82,7 +87,15 @@ public abstract class AbstractMeicanExecutor<T extends BaseRequest, D> implement
 
     protected abstract Map<String, String> prepareUrlParams(T param);
 
-    protected abstract void prepareHeaders(MultiValueMap<String, String> headers);
+    protected void prepareHeaders(MultiValueMap<String, String> headers) {
+    }
 
+    protected String prepareBodyParam(T param) {
+        return null;
+    }
+
+    protected boolean needToken() {
+        return true;
+    }
 
 }

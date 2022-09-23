@@ -4,25 +4,21 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModel;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
 
-import io.swagger.annotations.ApiModel;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author liyongbing
  * @since 2022-09-22
  */
-@ToString
-@Getter
-@Setter
+@Data
 @TableName("meican_task")
 @ApiModel(value = "MeicanTask对象", description = "")
 public class MeicanTask implements Serializable {

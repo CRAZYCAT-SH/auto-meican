@@ -17,4 +17,7 @@ public class IndexRestApi {
     public Object hello(){
         return "hello auto meicai";
     }
+
+
+
 }

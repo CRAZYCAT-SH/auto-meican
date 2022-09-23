@@ -1,15 +1,16 @@
 package com.shinho.automeican.remote.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.shinho.automeican.dto.CalendarItemsRequest;
+import com.shinho.automeican.dto.CalendarItemsResponse;
 import com.shinho.automeican.remote.AbstractMeicanExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
-import org.springframework.util.MultiValueMap;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName CalendarItemsExecutor
@@ -20,10 +21,30 @@ import java.util.Map;
  **/
 @Slf4j
 @Component
-public class CalendarItemsExecutor extends AbstractMeicanExecutor<CalendarItemsRequest, JSONObject> {
+public class CalendarItemsExecutor extends AbstractMeicanExecutor<CalendarItemsRequest, List<CalendarItemsResponse>> {
+
     @Override
-    protected Class<JSONObject> getResultClass() {
-        return JSONObject.class;
+    protected List<CalendarItemsResponse> parseResult(String body) {
+        List<JSONObject> calendarItemList = Optional.of(body)
+                .map(JSON::parseObject)
+                .map(e -> e.getJSONArray("dateList"))
+                .map(Collection::stream)
+                .get()
+                .map(e -> ((JSONObject) JSONObject.toJSON(e)).getJSONArray("calendarItemList"))
+                .flatMap(Collection::stream)
+                .map(e -> (JSONObject) JSONObject.toJSON(e))
+                .collect(Collectors.toList());
+        List<CalendarItemsResponse> result = new ArrayList<>();
+        for (JSONObject calendarItem : calendarItemList) {
+            CalendarItemsResponse response = new CalendarItemsResponse();
+            response.setUniqueId(calendarItem.getJSONObject("userTab").getString("uniqueId"));
+            response.setTargetTime(calendarItem.getDate("targetTime"));
+            response.setStatus(calendarItem.getString("status"));
+            response.setTitle(calendarItem.getString("title"));
+            response.setName(calendarItem.getJSONObject("userTab").getString("name"));
+            result.add(response);
+        }
+        return result;
     }
 
     @Override
@@ -45,8 +66,4 @@ public class CalendarItemsExecutor extends AbstractMeicanExecutor<CalendarItemsR
         return params;
     }
 
-    @Override
-    protected void prepareHeaders(MultiValueMap<String, String> headers) {
-
-    }
 }
