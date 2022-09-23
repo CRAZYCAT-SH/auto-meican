@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.shinho</groupId>
-    <artifactId>auto-meicai</artifactId>
+    <artifactId>auto-meican</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>auto-meicai</name>
+    <name>auto-meican</name>
     <description>美餐定时点餐系统</description>
     <properties>
         <java.version>1.8</java.version>
@@ -70,6 +70,7 @@
     </dependencies>
 
     <build>
+        <finalName>auto-meican</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
