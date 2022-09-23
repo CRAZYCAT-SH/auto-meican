@@ -8,7 +8,7 @@
         <version>2.7.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.shinho</groupId>
+    <groupId>com.github</groupId>
     <artifactId>auto-meican</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>auto-meican</name>
