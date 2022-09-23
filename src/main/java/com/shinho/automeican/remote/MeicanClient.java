@@ -42,8 +42,11 @@ public class MeicanClient {
         if (CollectionUtils.isEmpty(calendars)) {
             throw new RuntimeException("未找到点餐日历");
         }
-        CalendarItemsResponse calendar = calendars.stream().filter(e -> OPEN_STATUS.equals(e.getStatus())).findFirst()
-                .orElseThrow(() -> new RuntimeException("未找到点餐日历"));
+        CalendarItemsResponse calendar = calendars.stream().filter(e -> "欣和企业午餐".equals(e.getTitle())).findFirst()
+                .orElseThrow(() -> new RuntimeException("未找到可用点餐日历"));
+        if (!OPEN_STATUS.equals(calendar.getStatus())) {
+            log.warn("点餐日历可能不可用：" + calendar.getTitle());
+        }
         List<DishesResponse> dishes = getDishes(task, calendar);
         if (CollectionUtils.isEmpty(dishes)) {
             throw new RuntimeException("未找到点餐菜品");
