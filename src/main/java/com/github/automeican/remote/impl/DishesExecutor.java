@@ -27,12 +27,14 @@ public class DishesExecutor extends AbstractMeicanExecutor<DishesRequest, List<D
     protected List<DishesResponse> parseResult(String body) {
         List<DishesResponse> myRegularDishList = Optional.of(body)
                 .map(JSONObject::parseObject)
-                .map(e -> e.getJSONArray("myRegularDishList").toJavaList(DishesResponse.class))
-                .get();
+                .map(e -> e.getJSONArray("myRegularDishList"))
+                .map(e -> e.toJavaList(DishesResponse.class))
+                .orElse(Collections.emptyList());
         List<DishesResponse> othersRegularDishList = Optional.of(body)
                 .map(JSONObject::parseObject)
-                .map(e -> e.getJSONArray("othersRegularDishList").toJavaList(DishesResponse.class))
-                .get();
+                .map(e -> e.getJSONArray("othersRegularDishList"))
+                .map(e -> e.toJavaList(DishesResponse.class))
+                .orElse(Collections.emptyList());
         return Stream.of(myRegularDishList, othersRegularDishList).flatMap(Collection::stream).collect(Collectors.toList());
     }
 
