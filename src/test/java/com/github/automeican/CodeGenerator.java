@@ -17,12 +17,12 @@ public class CodeGenerator {
                             .outputDir(localPath+"auto-meican/src/main/java"); // 指定输出目录
                 })
                 .packageConfig(builder -> {
-                    builder.parent("com.shinho.automeican") // 设置父包名
+                    builder.parent("com.github.automeican") // 设置父包名
                             .moduleName("dao") // 设置父包模块名
                             .pathInfo(Collections.singletonMap(OutputFile.mapperXml, localPath+"auto-meican/src/main/resources/mapper")); // 设置mapperXml生成路径
                 })
                 .strategyConfig(builder -> {
-                    builder.addInclude("meican_task") // 设置需要生成的表名
+                    builder.addInclude("meican_account","meican_booking") // 设置需要生成的表名
 //                            .addTablePrefix("t_", "c_") // 设置过滤表前缀
                             .entityBuilder().enableLombok().logicDeleteColumnName("deleted")
                     ;

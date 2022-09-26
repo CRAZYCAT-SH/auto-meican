@@ -2,8 +2,8 @@ package com.github.automeican.job;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.automeican.common.TaskStatus;
-import com.github.automeican.dao.entity.MeicanTask;
-import com.github.automeican.dao.service.IMeicanTaskService;
+import com.github.automeican.dao.entity.MeicanBooking;
+import com.github.automeican.dao.service.IMeicanBookingService;
 import com.github.automeican.remote.MeicanClient;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,7 +27,7 @@ import java.util.List;
 @Component
 public class OrderMeicanJob extends QuartzJobBean {
     @Resource
-    private IMeicanTaskService meicanTaskService;
+    private IMeicanBookingService meicanBookingService;
 
     @Resource
     private MeicanClient meicanClient;
@@ -36,19 +37,22 @@ public class OrderMeicanJob extends QuartzJobBean {
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
         log.info("================>>> OrderMeicanJob start");
         String today = LocalDate.now().toString();
-        List<MeicanTask> list = meicanTaskService.list(Wrappers.<MeicanTask>lambdaQuery()
-                .eq(MeicanTask::getOrderDate, today)
-                .ne(MeicanTask::getOrderStatus, TaskStatus.SUCCESS.name())
+        List<MeicanBooking> list = meicanBookingService.list(Wrappers.<MeicanBooking>lambdaQuery()
+                .eq(MeicanBooking::getOrderDate, today)
+                .ne(MeicanBooking::getOrderStatus, TaskStatus.SUCCESS.name())
         );
-        for (MeicanTask meicanTask : list) {
+        for (MeicanBooking meicanTask : list) {
             try {
                 meicanClient.executeTask(meicanTask);
                 meicanTask.setOrderStatus(TaskStatus.SUCCESS.name());
             } catch (Exception e) {
                 meicanTask.setOrderStatus(TaskStatus.FAIL.name());
+                meicanTask.setErrorMsg(e.getMessage());
             }
+            meicanTask.setTryCount(meicanTask.getTryCount() + 1);
+            meicanTask.setUpdateDate(new Date());
         }
-        meicanTaskService.updateBatchById(list);
+        meicanBookingService.updateBatchById(list);
         log.info("================>>> OrderMeicanJob end");
     }
 }

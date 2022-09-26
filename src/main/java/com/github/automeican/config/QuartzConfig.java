@@ -25,7 +25,7 @@ public class QuartzConfig {
         return TriggerBuilder
                 .newTrigger()
                 .forJob(jobDetail())
-                .withSchedule(CronScheduleBuilder.cronSchedule("0 5 0 * * ?"))
+                .withSchedule(CronScheduleBuilder.cronSchedule("30 0 0 * * ?"))
                 .build();
     }
 
@@ -34,7 +34,7 @@ public class QuartzConfig {
         return TriggerBuilder
                 .newTrigger()
                 .forJob(jobDetail())
-                .withSchedule(CronScheduleBuilder.cronSchedule("0 15 0 * * ?"))
+                .withSchedule(CronScheduleBuilder.cronSchedule("30 10 0 * * ?"))
                 .build();
     }
 }

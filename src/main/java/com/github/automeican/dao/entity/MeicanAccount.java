@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
-import lombok.Data;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -16,29 +16,26 @@ import java.util.Date;
  * </p>
  *
  * @author liyongbing
- * @since 2022-09-22
+ * @since 2022-09-26
  */
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Data
-@TableName("meican_task")
-@ApiModel(value = "MeicanTask对象", description = "")
-public class MeicanTask implements Serializable {
+@TableName("meican_account")
+@ApiModel(value = "MeicanAccount对象", description = "")
+public class MeicanAccount implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @TableId(type = IdType.ASSIGN_ID)
     private Long uid;
 
-    private String meicanAccountName;
+    private String accountName;
 
-    private String meicanAccountPassword;
+    private String accountPassword;
 
-    private String orderName;
-
-    private String orderDate;
-
-    private String orderDish;
-
-    private String orderStatus;
+    private String accountCookie;
 
     private Date createDate;
 

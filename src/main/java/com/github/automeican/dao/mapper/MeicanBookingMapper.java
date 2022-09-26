@@ -1,6 +1,6 @@
 package com.github.automeican.dao.mapper;
 
-import com.github.automeican.dao.entity.MeicanTask;
+import com.github.automeican.dao.entity.MeicanBooking;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -9,8 +9,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author liyongbing
- * @since 2022-09-22
+ * @since 2022-09-26
  */
-public interface MeicanTaskMapper extends BaseMapper<MeicanTask> {
+public interface MeicanBookingMapper extends BaseMapper<MeicanBooking> {
 
 }

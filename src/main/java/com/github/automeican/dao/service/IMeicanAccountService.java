@@ -1,6 +1,6 @@
 package com.github.automeican.dao.service;
 
-import com.github.automeican.dao.entity.MeicanTask;
+import com.github.automeican.dao.entity.MeicanAccount;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -9,8 +9,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * </p>
  *
  * @author liyongbing
- * @since 2022-09-22
+ * @since 2022-09-26
  */
-public interface IMeicanTaskService extends IService<MeicanTask> {
+public interface IMeicanAccountService extends IService<MeicanAccount> {
 
 }

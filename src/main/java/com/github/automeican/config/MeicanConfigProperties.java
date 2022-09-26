@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
 public class MeicanConfigProperties {
     private String client_id = "Xqr8w0Uk4ciodqfPwjhav5rdxTaYepD";
     private String client_secret = "vD11O6xI9bG3kqYRu9OyPAHkRGxLh4E";
-    private String baseUrl = "https://meican.com";
+    private String baseUrl = "https://www.meican.com";
     private String addressUniqueId = "9a685dc748e5";
 
 }

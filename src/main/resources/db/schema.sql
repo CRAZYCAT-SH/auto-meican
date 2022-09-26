@@ -1,14 +1,25 @@
-#表设计文件
-drop table if exists `meican_task`;
-CREATE TABLE `meican_task`
+-- 表设计文件
+drop table if exists `meican_account`;
+CREATE TABLE `meican_account`
 (
     `uid`                     bigint(20)  NOT NULL primary key,
-    `meican_account_name`     varchar(64) NOT NULL,
-    `meican_account_password` varchar(64) NOT NULL,
-    `order_name`              varchar(64) NOT NULL,
+    `account_name`            varchar(64) NOT NULL,
+    `account_password`        varchar(64)  NULL,
+    `account_cookie`          varchar(256)  NULL,
+    `create_date`             timestamp   NULL     DEFAULT CURRENT_TIMESTAMP,
+    `update_date`             timestamp   NULL     DEFAULT CURRENT_TIMESTAMP,
+    `deleted`                 int(2)               DEFAULT '0'
+);
+
+CREATE TABLE `meican_booking`
+(
+    `uid`                     bigint(20)  NOT NULL primary key,
+    `account_name`            varchar(64) NOT NULL,
     `order_date`              varchar(64) NOT NULL,
     `order_dish`              varchar(64) NOT NULL,
     `order_status`            varchar(64) NOT NULL DEFAULT 'INIT',
+    `try_count`               int(2)               DEFAULT '0',
+    `error_msg`               varchar(1024) NULL DEFAULT '',
     `create_date`             timestamp   NULL     DEFAULT CURRENT_TIMESTAMP,
     `update_date`             timestamp   NULL     DEFAULT CURRENT_TIMESTAMP,
     `deleted`                 int(2)               DEFAULT '0'
