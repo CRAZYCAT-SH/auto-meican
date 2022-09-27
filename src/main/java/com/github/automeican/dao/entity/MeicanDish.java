@@ -6,6 +6,9 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.github.automeican.common.BigIdSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -27,6 +30,8 @@ import lombok.*;
 public class MeicanDish implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    @JsonSerialize(using = BigIdSerializer.class)
     @TableId(type = IdType.ASSIGN_ID)
     private Long uid;
 

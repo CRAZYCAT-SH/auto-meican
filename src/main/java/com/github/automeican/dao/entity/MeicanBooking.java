@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.github.automeican.common.BigIdSerializer;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
 
@@ -28,6 +30,7 @@ public class MeicanBooking implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @JsonSerialize(using = BigIdSerializer.class)
     @TableId(type = IdType.ASSIGN_ID)
     private Long uid;
 
