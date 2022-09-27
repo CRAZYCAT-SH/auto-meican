@@ -1,7 +1,11 @@
 package com.github.automeican.remote;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.automeican.dao.entity.MeicanBooking;
+import com.github.automeican.dao.entity.MeicanDish;
+import com.github.automeican.dao.service.IMeicanDishService;
 import com.github.automeican.dto.*;
 import com.github.automeican.remote.impl.CalendarItemsExecutor;
 import com.github.automeican.remote.impl.DishesExecutor;
@@ -13,6 +17,7 @@ import org.springframework.util.Assert;
 import javax.annotation.Resource;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName MeicanClient
@@ -32,6 +37,8 @@ public class MeicanClient {
     private DishesExecutor dishesExecutor;
     @Resource
     private OrdersAddExecutor ordersAddExecutor;
+    @Resource
+    private IMeicanDishService meicanDishService;
 
 
 
@@ -52,6 +59,7 @@ public class MeicanClient {
         if (CollectionUtils.isEmpty(dishes)) {
             throw new RuntimeException("未找到点餐菜品");
         }
+        updateDish(task, dishes);
         DishesResponse dish = dishes.stream().filter(e -> e.getName().contains(task.getOrderDish())).findFirst().orElse(dishes.get(0));
         if (!dish.getName().contains(task.getOrderDish())) {
             log.warn("未找到点餐菜品，默认选择了第一个菜品：" + dish.getName());
@@ -66,6 +74,22 @@ public class MeicanClient {
         if (!SUCCESS_ORDER.equals(success)) {
             throw new RuntimeException("点餐失败");
         }
+    }
+
+    private void updateDish(MeicanBooking task, List<DishesResponse> dishes) {
+        List<String> dishNameList = dishes.stream().map(DishesResponse::getName).collect(Collectors.toList());
+        MeicanDish meicanDish = meicanDishService.getOne(Wrappers.<MeicanDish>lambdaQuery()
+                .eq(MeicanDish::getAccountName, task.getAccountName())
+                .eq(MeicanDish::getOrderDate,task.getOrderDate())
+                .last(" LIMIT 1 ")
+        );
+        if (meicanDish == null) {
+            meicanDish = new MeicanDish();
+            meicanDish.setAccountName(task.getAccountName());
+            meicanDish.setOrderDate(task.getOrderDate());
+        }
+        meicanDish.setOrderDish(JSON.toJSONString(dishNameList));
+        meicanDishService.saveOrUpdate(meicanDish);
     }
 
     private List<DishesResponse> getDishes(MeicanBooking task, CalendarItemsResponse calendar) {

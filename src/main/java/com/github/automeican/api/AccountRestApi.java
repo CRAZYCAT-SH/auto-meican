@@ -1,5 +1,6 @@
 package com.github.automeican.api;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.automeican.common.JsonResult;
 import com.github.automeican.dao.entity.MeicanAccount;
 import com.github.automeican.dao.service.IMeicanAccountService;
@@ -36,6 +37,7 @@ public class AccountRestApi {
     @ApiOperation("添加美餐账号")
     @PostMapping("/api/meicanAccount/addAccount")
     public JsonResult<Boolean> addAccount(@RequestBody MeicanAccount account){
+        meicanAccountService.remove(Wrappers.<MeicanAccount>lambdaQuery().eq(MeicanAccount::getAccountName,account.getAccountName()));
         return JsonResult.get(meicanAccountService.save(account));
     }
 

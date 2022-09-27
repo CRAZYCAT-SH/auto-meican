@@ -41,6 +41,9 @@ import java.util.regex.Pattern;
 @Component
 public class AuthService {
     private static final CacheManager<String, AuthInfo> TOKEN_CACHE_MANAGER = new CacheManager<>();
+
+    private static final Pattern TOKEN_PATTERN = Pattern.compile("\\{accessToken:\"(.*?)\\}");
+
     @Resource
     protected MeicanConfigProperties configProperties;
     @Resource
@@ -55,7 +58,11 @@ public class AuthService {
         if (authInfo != null) {
             return authInfo;
         }
-        MeicanAccount account = meicanAccountService.getOne(Wrappers.<MeicanAccount>lambdaQuery().eq(MeicanAccount::getAccountName, username));
+        MeicanAccount account = meicanAccountService.getOne(Wrappers.<MeicanAccount>lambdaQuery()
+                .eq(MeicanAccount::getAccountName, username)
+                .orderByDesc(MeicanAccount::getUid)
+                .last("LIMIT 1")
+        );
         if (account == null) {
             throw new RuntimeException("账号未配置，请先配置您的美餐账号");
         }
@@ -93,7 +100,9 @@ public class AuthService {
             Date expire = new Date(System.currentTimeMillis() + (expiresIn * 1000L) - 5000L);
             String access_token = tokenResponse.getAccess_token();
             List<String> list = responseEntity.getHeaders().get("set-cookie");
-            String remember = Objects.requireNonNull(list).stream().filter(e -> e.contains("remember")).findFirst().get();
+            String remember = Objects.requireNonNull(list).stream().filter(e -> e.contains("remember")).findFirst().orElseThrow(()->new RuntimeException("获取cookie失败"));
+            log.info("获取到cookie信息:[{}]",remember);
+            remember = remember.split(";")[0];
             meicanAccountService.updateById(MeicanAccount.builder().uid(param.getUid()).accountCookie(remember).updateDate(new Date()).build());
             TOKEN_CACHE_MANAGER.put(param.getAccountName(), new AuthInfo(access_token,remember), expire);
         } else {
@@ -113,15 +122,20 @@ public class AuthService {
         if (responseEntity.getStatusCode().is2xxSuccessful()) {
             String indexHtml = Objects.requireNonNull(responseEntity.getBody(), "获取index body 异常");
             Date expire = new Date(System.currentTimeMillis() + (3000L * 1000L));
-            Pattern patten= Pattern.compile("\\{accessToken:(.*?)\\}");
-            Matcher m = patten.matcher(indexHtml);
+            Matcher m = TOKEN_PATTERN.matcher(indexHtml);
             String token = null;
             while (m.find()){
                  token = m.group();
             }
             if (token == null) {
+                log.warn("cookie 可能已失效,将尝试密码登陆 :[{}]",param);
+                if(StringUtils.hasText(param.getAccountPassword())){//密码验证
+                    requestAuth(param);
+                    return;
+                }
                 throw new RuntimeException("未找到首页token数据");
             }
+            log.info("获取到token信息：[{}]",token);
             JSONObject tokenJson = JSON.parseObject(token);
             TOKEN_CACHE_MANAGER.put(param.getAccountName(), new AuthInfo(tokenJson.getString("accessToken"),param.getAccountCookie()), expire);
         } else {

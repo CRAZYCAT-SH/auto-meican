@@ -1,5 +1,6 @@
 package com.github.automeican.api;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -8,16 +9,23 @@ import com.github.automeican.common.HttpReturnEnums;
 import com.github.automeican.common.JsonResult;
 import com.github.automeican.common.TaskStatus;
 import com.github.automeican.dao.entity.MeicanBooking;
+import com.github.automeican.dao.entity.MeicanDish;
 import com.github.automeican.dao.service.IMeicanBookingService;
+import com.github.automeican.dao.service.IMeicanDishService;
 import com.github.automeican.remote.MeicanClient;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @ClassName IndexRestApi
@@ -39,6 +47,8 @@ public class IndexRestApi {
     @Resource
     private IMeicanBookingService meicanBookingService;
     @Resource
+    private IMeicanDishService meicanDishService;
+    @Resource
     private MeicanClient meicanClient;
 
 
@@ -50,12 +60,29 @@ public class IndexRestApi {
             queryWrapper.like(MeicanBooking::getOrderDate, query.getOrderDate());
         }
         if (query.getOrderDish() != null) {
-            queryWrapper.like(MeicanBooking::getOrderDate, query.getOrderDish());
+            queryWrapper.like(MeicanBooking::getOrderDish, query.getOrderDish());
         }
         if (query.getAccountName() != null) {
-            queryWrapper.like(MeicanBooking::getOrderDate, query.getAccountName());
+            queryWrapper.like(MeicanBooking::getAccountName, query.getAccountName());
         }
+        queryWrapper.orderByDesc(MeicanBooking::getUid);
         return JsonResult.get(meicanBookingService.page(new Page<>(query.getPageNo(), query.getPageSize()), queryWrapper));
+    }
+
+    @ApiOperation("查询美餐推荐菜品")
+    @GetMapping("/api/meicanTask/dishList")
+    public JsonResult<List<String>> dishList(@RequestParam(required = false) String accountName) {
+        if (StringUtils.hasText(accountName)) {
+            LambdaQueryWrapper<MeicanDish> queryWrapper = Wrappers.lambdaQuery();
+            queryWrapper.eq(MeicanDish::getAccountName,accountName);
+            queryWrapper.orderByDesc(MeicanDish::getOrderDate).last(" LIMIT 1 ");
+            MeicanDish dish = meicanDishService.getOne(queryWrapper);
+            if (dish != null) {
+                return JsonResult.get(Optional.of(dish).map(MeicanDish::getOrderDish).map(e -> JSON.parseArray(e,String.class)).orElse(Collections.emptyList()));
+            }
+        }
+        MeicanDish dish = meicanDishService.getOne(Wrappers.<MeicanDish>lambdaQuery().orderByDesc(MeicanDish::getOrderDate).last(" LIMIT 1 "));
+        return JsonResult.get(Optional.ofNullable(dish).map(MeicanDish::getOrderDish).map(e -> JSON.parseArray(e,String.class)).orElse(Collections.emptyList()));
     }
 
     @ApiOperation("添加美餐预定任务")

@@ -45,7 +45,9 @@ public class OrderMeicanJob extends QuartzJobBean {
             try {
                 meicanClient.executeTask(meicanTask);
                 meicanTask.setOrderStatus(TaskStatus.SUCCESS.name());
+                meicanTask.setErrorMsg("success");
             } catch (Exception e) {
+                log.error("OrderMeicanJob error",e);
                 meicanTask.setOrderStatus(TaskStatus.FAIL.name());
                 meicanTask.setErrorMsg(e.getMessage());
             }

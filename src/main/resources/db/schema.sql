@@ -1,5 +1,4 @@
 -- 表设计文件
-drop table if exists `meican_account`;
 CREATE TABLE `meican_account`
 (
     `uid`                     bigint(20)  NOT NULL primary key,
@@ -20,6 +19,17 @@ CREATE TABLE `meican_booking`
     `order_status`            varchar(64) NOT NULL DEFAULT 'INIT',
     `try_count`               int(2)               DEFAULT '0',
     `error_msg`               varchar(1024) NULL DEFAULT '',
+    `create_date`             timestamp   NULL     DEFAULT CURRENT_TIMESTAMP,
+    `update_date`             timestamp   NULL     DEFAULT CURRENT_TIMESTAMP,
+    `deleted`                 int(2)               DEFAULT '0'
+);
+
+CREATE TABLE `meican_dish`
+(
+    `uid`                     bigint(20)  NOT NULL primary key,
+    `account_name`            varchar(64) NOT NULL,
+    `order_date`              varchar(64) NOT NULL,
+    `order_dish`              varchar(2048) NOT NULL,
     `create_date`             timestamp   NULL     DEFAULT CURRENT_TIMESTAMP,
     `update_date`             timestamp   NULL     DEFAULT CURRENT_TIMESTAMP,
     `deleted`                 int(2)               DEFAULT '0'
