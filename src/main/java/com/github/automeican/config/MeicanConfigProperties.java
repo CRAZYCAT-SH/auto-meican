@@ -19,5 +19,6 @@ public class MeicanConfigProperties {
     private String client_secret = "vD11O6xI9bG3kqYRu9OyPAHkRGxLh4E";
     private String baseUrl = "https://www.meican.com";
     private String addressUniqueId = "9a685dc748e5";
+    private String sysAccount = "18762036036@shinho.net.cn";
 
 }

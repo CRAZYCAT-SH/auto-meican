@@ -1,20 +1,21 @@
 package com.github.automeican.remote;
 
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.github.automeican.config.MeicanConfigProperties;
 import com.github.automeican.dao.entity.MeicanBooking;
-import com.github.automeican.dao.entity.MeicanDish;
-import com.github.automeican.dao.service.IMeicanDishService;
 import com.github.automeican.dto.*;
 import com.github.automeican.remote.impl.CalendarItemsExecutor;
-import com.github.automeican.remote.impl.DishesExecutor;
 import com.github.automeican.remote.impl.OrdersAddExecutor;
+import com.github.automeican.remote.impl.RestaurantsListExecutor;
+import com.github.automeican.remote.impl.RestaurantsShowExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,21 +33,22 @@ public class MeicanClient {
     private static final String OPEN_STATUS = "AVAILABLE";
     public static final String SUCCESS_ORDER = "SUCCESSFUL";
     @Resource
-    private CalendarItemsExecutor calendarItemsExecutor;
+    private MeicanConfigProperties meicanConfigProperties;
     @Resource
-    private DishesExecutor dishesExecutor;
+    private CalendarItemsExecutor calendarItemsExecutor;
     @Resource
     private OrdersAddExecutor ordersAddExecutor;
     @Resource
-    private IMeicanDishService meicanDishService;
-
+    private RestaurantsListExecutor restaurantsListExecutor;
+    @Resource
+    private RestaurantsShowExecutor restaurantsShowExecutor;
 
 
     public void executeTask(MeicanBooking task) {
         Assert.notNull(task, "任务为空");
         Assert.notNull(task.getAccountName(), "美餐账号未填写");
         Assert.notNull(task.getOrderDate(), "日期未填写");
-        List<CalendarItemsResponse> calendars = getCalendar(task);
+        List<CalendarItemsResponse> calendars = getCalendar(task.getAccountName(), task.getOrderDate());
         if (CollectionUtils.isEmpty(calendars)) {
             throw new RuntimeException("未找到点餐日历");
         }
@@ -55,11 +57,10 @@ public class MeicanClient {
         if (!OPEN_STATUS.equals(calendar.getStatus())) {
             log.warn("点餐日历可能不可用：" + calendar.getTitle());
         }
-        List<DishesResponse> dishes = getDishes(task, calendar);
+        List<DishesResponse> dishes = getDishes(task.getAccountName(), calendar);
         if (CollectionUtils.isEmpty(dishes)) {
             throw new RuntimeException("未找到点餐菜品");
         }
-        updateDish(task, dishes);
         DishesResponse dish = dishes.stream().filter(e -> e.getName().contains(task.getOrderDish())).findFirst().orElse(dishes.get(0));
         if (!dish.getName().contains(task.getOrderDish())) {
             log.warn("未找到点餐菜品，默认选择了第一个菜品：" + dish.getName());
@@ -76,35 +77,54 @@ public class MeicanClient {
         }
     }
 
-    private void updateDish(MeicanBooking task, List<DishesResponse> dishes) {
-        List<String> dishNameList = dishes.stream().map(DishesResponse::getName).collect(Collectors.toList());
-        MeicanDish meicanDish = meicanDishService.getOne(Wrappers.<MeicanDish>lambdaQuery()
-                .eq(MeicanDish::getAccountName, task.getAccountName())
-                .eq(MeicanDish::getOrderDate,task.getOrderDate())
-                .last(" LIMIT 1 ")
-        );
-        if (meicanDish == null) {
-            meicanDish = new MeicanDish();
-            meicanDish.setAccountName(task.getAccountName());
-            meicanDish.setOrderDate(task.getOrderDate());
+    public List<String> currentDishList(String account,String date) {
+        if (!StringUtils.hasText(account)) {
+            account = meicanConfigProperties.getSysAccount();
         }
-        meicanDish.setOrderDish(JSON.toJSONString(dishNameList));
-        meicanDishService.saveOrUpdate(meicanDish);
+        if (!StringUtils.hasText(date)) {
+            date = LocalDate.now().plusDays(1).toString();
+        }
+        try {
+            List<CalendarItemsResponse> calendars = getCalendar(account, date);
+            CalendarItemsResponse calendar = calendars.stream().filter(e -> "欣和企业午餐".equals(e.getTitle())).findFirst()
+                    .orElse(null);
+            if (calendar != null) {
+                List<DishesResponse> dishes = getDishes(account, calendar);
+                return dishes.stream().map(DishesResponse::getName).collect(Collectors.toList());
+            }
+        } catch (Exception e) {
+            log.error("获取菜品失败",e);
+        }
+        return Collections.singletonList("暂无可见菜品,随便点一个吧");
     }
 
-    private List<DishesResponse> getDishes(MeicanBooking task, CalendarItemsResponse calendar) {
-        DishesRequest param = new DishesRequest();
-        param.setUsername(task.getAccountName());
+
+    private List<DishesResponse> getDishes(String account, CalendarItemsResponse calendar) {
+        List<DishesResponse> result = new ArrayList<>();
+        RestaurantsListRequest param = new RestaurantsListRequest();
+        param.setUsername(account);
         param.setTabUniqueId(calendar.getUniqueId());
         param.setTargetTime(calendar.getTargetTime());
-        return dishesExecutor.execute(param);
+        List<RestaurantsListResponse> responseList = restaurantsListExecutor.execute(param);
+        if (CollectionUtils.isNotEmpty(responseList)) {
+            for (RestaurantsListResponse response : responseList) {
+                RestaurantsShowRequest request = new RestaurantsShowRequest();
+                request.setUsername(account);
+                request.setTabUniqueId(calendar.getUniqueId());
+                request.setTargetTime(calendar.getTargetTime());
+                request.setRestaurantUniqueId(response.getUniqueId());
+                List<DishesResponse> dishesResponses = restaurantsShowExecutor.execute(request);
+                result.addAll(dishesResponses.stream().filter(e -> !e.getDishSectionId().equals(e.getId())).collect(Collectors.toList()));
+            }
+        }
+        return result;
     }
 
-    private List<CalendarItemsResponse> getCalendar(MeicanBooking task) {
+    private List<CalendarItemsResponse> getCalendar(String account, String date) {
         CalendarItemsRequest param = new CalendarItemsRequest();
-        param.setUsername(task.getAccountName());
-        param.setBeginDate(task.getOrderDate());
-        param.setEndDate(task.getOrderDate());
+        param.setUsername(account);
+        param.setBeginDate(date);
+        param.setEndDate(date);
         return calendarItemsExecutor.execute(param);
     }
 

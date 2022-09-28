@@ -235,8 +235,56 @@ Connection: keep-alive
 
 
 
+#根据餐馆获取菜品
+GET /forward/api/v2.1/restaurants/show?client_id=Xqr8w0Uk4ciodqfPwjhav5rdxTaYepD&client_secret=vD11O6xI9bG3kqYRu9OyPAHkRGxLh4E&tabUniqueId=3c059203-bd15-4918-a797-035cf5386abe&targetTime=2022-09-29+10:00&restaurantUniqueId=8b356c HTTP/1.1
+Accept: application/json, text/plain, */*
+Accept-Encoding: gzip, deflate, br
+Accept-Language: zh
+Authorization: Bearer j6fQ95A8jq8wvW4bm5KUudAKeKFxTAq
+Cache-Control: no-cache
+Connection: keep-alive
+Cookie: machineId=14cdf0a3-168d-48a7-bc5c-cf77cfba645a; guestId=f7777802-4c7e-47ea-9259-7e6d2ca805c1; cna=5a7888920d954a5e800b525e7e68fec0; remember=21d9a653c4550e69b0339640a68bf23d58c61865-2413865; PLAY_FLASH="inner_authorized=true"; AWSALB=XpIyjG960gGhwx1z3Yvg5yjB4iOcfqiC0a7p4R0gOtscdbv2lYRzwwIffOoj1PwGSp2ieI6pnC0gFOVdkK/xnVLcwrcPUNxVqgKI5BzruQyiMqp8Hxf36Yf/dYl3; AWSALBCORS=XpIyjG960gGhwx1z3Yvg5yjB4iOcfqiC0a7p4R0gOtscdbv2lYRzwwIffOoj1PwGSp2ieI6pnC0gFOVdkK/xnVLcwrcPUNxVqgKI5BzruQyiMqp8Hxf36Yf/dYl3
+Expires: 0
+Host: www.meican.com
+Pragma: no-cache
+Referer: https://www.meican.com/?date=1664380800&key=3c059203-bd15-4918-a797-035cf5386abeX1664416800000&re=8b356c
+Sec-Fetch-Dest: empty
+Sec-Fetch-Mode: cors
+Sec-Fetch-Site: same-origin
+User-Agent: Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Mobile Safari/537.36
+sec-ch-ua: "Google Chrome";v="105", "Not)A;Brand";v="8", "Chromium";v="105"
+sec-ch-ua-mobile: ?1
+sec-ch-ua-platform: "Android"
 
 
+
+HTTP/1.1 200 OK
+Content-Encoding: gzip
+Content-Type: application/json; charset=utf-8
+Date: Wed, 28 Sep 2022 02:04:22 GMT
+etag: W/"ab3-yzeYuoWWwmqTIk1UDHW7sVdlH3M"
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+Vary: Accept-Encoding
+x-amz-apigw-id: ZJfB-EInBTIFnQA=
+x-amzn-Remapped-content-length: 2739
+x-amzn-RequestId: b0e3beaf-26f8-4ca4-b84c-bb72770ed9fc
+X-Amzn-Trace-Id: Root=1-6333aba6-0f5754ae587a61d47ddcd303;Sampled=0
+x-powered-by: Express
+Content-Length: 1092
+Connection: keep-alive
+
+
+{"additionalInfo":{"address":"","assessDate":"","assessEndDate":"","businessType":"","cityName":"上海","cityUrl":"shanghai","companyName":"","district":"","level":"_","licenseNumber":"","representative":""},
+"assessment":{"assessmentIconUrl":"","fields":[{"key":"年度等级","value":""},{"key":"动态等级","value":""},{"key":"检查日期","value":"正在核查"}]},
+"availableDishCount":50,
+"businessLicenseUrl":"https://s3.cn-north-1.amazonaws.com.cn/restaurant/2722fce9-556c-463c-b9e5-a5bb154b6600-2400x1664.jpg",
+"corpRestaurantId":751322,
+"deliveryFeeInCent":null,
+"deliveryRange":null,
+"deliveryRangeMeter":null,
+"dishLimit":50,
+"dishList":[{"dishSectionId":216238100,"id":216238100,"isSection":true,"name":"套餐","originalPriceInCent":0,"priceInCent":0,"priceString":""},{"dishSectionId":216238100,"id":216238101,"isSection":false,"name":"山药排骨粥套餐(配粥&桂花糕&咸鸭蛋&油条/欣和专供)","originalPriceInCent":3800,"priceInCent":3800,"priceString":"38"},{"dishSectionId":216238100,"id":216238102,"isSection":false,"name":"老火生滚皮蛋粥套餐(配粥&桂花糕&咸鸭蛋&油条/欣和专供)","originalPriceInCent":3800,"priceInCent":3800,"priceString":"38"},{"dishSectionId":216238100,"id":216238103,"isSection":false,"name":"黑糖红豆桂圆粥套餐(配粥&桂花糕&咸鸭蛋&油条/欣和专供)","originalPriceInCent":3800,"priceInCent":3800,"priceString":"38"},{"dishSectionId":216238100,"id":216238104,"isSection":false,"name":"千里香馄饨套餐(配馄饨&桂花糕&荷包蛋/欣和专供)","originalPriceInCent":3800,"priceInCent":3800,"priceString":"38"},{"dishSectionId":216238100,"id":216238105,"isSection":false,"name":"招牌鲍鱼捞饭套餐(配米饭&青菜&土豆丝&鸡蛋&饮料/欣和专供)","originalPriceInCent":3800,"priceInCent":3800,"priceString":"38"},{"dishSectionId":216238100,"id":216238106,"isSection":false,"name":"香辣干锅牛蛙饭套餐(微辣/配米饭&青菜&土豆丝&鸡蛋&饮料/欣和专供)","originalPriceInCent":3800,"priceInCent":3800,"priceString":"38"}],"latitude":31.184871,"longitude":121.301785,"minimumOrder":null,"myRegularDishIdList":[],"name":"同记粥铺(虹桥世界中心店)","onlinePayment":true,"open":false,"openingTime":"","othersRegularDishIdList":[],"othersRegularDishIdListSource":"REGULAR","rating":2,"remarkEnabled":false,"restaurantId":331971,"restaurantStatus":0,"sanitationCertificateUrl":"https://s3.cn-north-1.amazonaws.com.cn/restaurant/1188454c-69ee-4cb3-ac8c-6951e3afbb62-2304x1536.jpg","sectionList":[{"id":216238100,"dishIdList":[216238101,216238102,216238103,216238104,216238105,216238106],"name":"套餐"}],
+"showPrice":false,"targetTime":"2022-09-29 10:00:00","tel":"13564290396","uniqueId":"8b356c","warning":""}
 
 
 

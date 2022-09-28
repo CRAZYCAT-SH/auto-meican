@@ -6,7 +6,6 @@ import com.github.automeican.dao.entity.MeicanAccount;
 import com.github.automeican.dao.entity.MeicanBooking;
 import com.github.automeican.dao.service.IMeicanAccountService;
 import com.github.automeican.dao.service.IMeicanBookingService;
-import com.github.automeican.dao.service.IMeicanDishService;
 import com.github.automeican.remote.AuthService;
 import com.github.automeican.remote.MeicanClient;
 import org.junit.jupiter.api.Test;
@@ -18,7 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SpringBootTest
-class AutoMeicaiApplicationTests {
+class AutoMeicanApplicationTests {
 
     @Resource
     private AuthService authService;
@@ -33,9 +32,6 @@ class AutoMeicaiApplicationTests {
 
     @Test
     void test() {
-        System.out.println(indexRestApi.dishList(""));
-        System.out.println(indexRestApi.dishList("123"));
-        System.out.println(indexRestApi.dishList(null));
     }
 
 ////        param.setUsername("18762036036@shinho.net.cn");
@@ -46,17 +42,7 @@ class AutoMeicaiApplicationTests {
 //        param.setMeicanAccountPassword("123456");
     @Test
     void test1() {
-
-        MeicanAccount account = new MeicanAccount();
-        account.setAccountName("18762036036@shinho.net.cn");
-        account.setAccountPassword("Shinho123");
-//        meicanAccountService.remove(Wrappers.<MeicanAccount>lambdaQuery().eq(MeicanAccount::getAccountName,account.getAccountName()));
-        meicanAccountService.save(account);
-        MeicanBooking booking = new MeicanBooking();
-        booking.setAccountName("18762036036@shinho.net.cn");
-        booking.setOrderDate(LocalDate.now().toString());
-        booking.setOrderDish("鲍鱼");
-        meicanClient.executeTask(booking);
+        System.out.println(meicanClient.currentDishList(null,"2022-10-30"));
     }
 
 
