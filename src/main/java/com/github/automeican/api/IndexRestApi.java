@@ -71,6 +71,10 @@ public class IndexRestApi {
     @ApiOperation("添加美餐预定任务")
     @PostMapping("/api/meicanTask/addTask")
     public JsonResult<Boolean> addTask(@RequestBody MeicanBooking task) {
+        meicanBookingService.remove(Wrappers.<MeicanBooking>lambdaQuery()
+                .eq(MeicanBooking::getAccountName,task.getAccountName())
+                .eq(MeicanBooking::getOrderDate,task.getOrderDate())
+        );
         task.setOrderStatus(TaskStatus.INIT.name());
         task.setCreateDate(new Date());
         task.setUpdateDate(new Date());
