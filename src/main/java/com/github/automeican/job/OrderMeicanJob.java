@@ -1,5 +1,6 @@
 package com.github.automeican.job;
 
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.automeican.common.TaskStatus;
 import com.github.automeican.dao.entity.MeicanBooking;
@@ -41,20 +42,22 @@ public class OrderMeicanJob extends QuartzJobBean {
                 .eq(MeicanBooking::getOrderDate, today)
                 .ne(MeicanBooking::getOrderStatus, TaskStatus.SUCCESS.name())
         );
-        for (MeicanBooking meicanTask : list) {
-            try {
-                meicanClient.executeTask(meicanTask);
-                meicanTask.setOrderStatus(TaskStatus.SUCCESS.name());
-                meicanTask.setErrorMsg("success");
-            } catch (Exception e) {
-                log.error("OrderMeicanJob error",e);
-                meicanTask.setOrderStatus(TaskStatus.FAIL.name());
-                meicanTask.setErrorMsg(e.getMessage());
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (MeicanBooking meicanTask : list) {
+                try {
+                    meicanClient.executeTask(meicanTask);
+                    meicanTask.setOrderStatus(TaskStatus.SUCCESS.name());
+                    meicanTask.setErrorMsg("success");
+                } catch (Exception e) {
+                    log.error("OrderMeicanJob error",e);
+                    meicanTask.setOrderStatus(TaskStatus.FAIL.name());
+                    meicanTask.setErrorMsg(e.getMessage());
+                }
+                meicanTask.setTryCount(meicanTask.getTryCount() + 1);
+                meicanTask.setUpdateDate(new Date());
             }
-            meicanTask.setTryCount(meicanTask.getTryCount() + 1);
-            meicanTask.setUpdateDate(new Date());
+            meicanBookingService.updateBatchById(list);
         }
-        meicanBookingService.updateBatchById(list);
         log.info("================>>> OrderMeicanJob end");
     }
 }

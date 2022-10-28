@@ -3,6 +3,8 @@ package com.github.automeican.api;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.automeican.common.JsonResult;
 import com.github.automeican.dao.entity.MeicanAccount;
+import com.github.automeican.dao.entity.MeicanAccountDishCheck;
+import com.github.automeican.dao.service.IMeicanAccountDishCheckService;
 import com.github.automeican.dao.service.IMeicanAccountService;
 import com.github.automeican.service.MeicanAccountManagerService;
 import io.swagger.annotations.Api;
@@ -11,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,6 +32,8 @@ public class AccountRestApi {
     private IMeicanAccountService meicanAccountService;
     @Resource
     private MeicanAccountManagerService meicanAccountManagerService;
+    @Resource
+    private IMeicanAccountDishCheckService meicanAccountDishCheckService;
 
 
     @ApiOperation("获取所有已配置美餐账号")
@@ -56,5 +61,25 @@ public class AccountRestApi {
         return JsonResult.get(meicanAccountService.removeById(accountId));
     }
 
+    @ApiOperation("获取所有已配置点餐检查账号")
+    @GetMapping("/api/meicanAccount/listAllCheck")
+    public JsonResult<List<MeicanAccountDishCheck>> listAllCheck(){
+        return JsonResult.get(meicanAccountDishCheckService.list());
+    }
 
+
+    @ApiOperation("添加点餐检查")
+    @PostMapping("/api/meicanAccount/addAccountDishCheck")
+    public JsonResult<Boolean> addAccountDishCheck(@RequestBody MeicanAccountDishCheck account){
+        meicanAccountDishCheckService.remove(Wrappers.<MeicanAccountDishCheck>lambdaQuery().eq(MeicanAccountDishCheck::getAccountName,account.getAccountName()));
+        account.setCreateDate(new Date());
+        account.setUpdateDate(new Date());
+        return JsonResult.get(meicanAccountDishCheckService.save(account));
+    }
+
+    @ApiOperation("删除点餐检查")
+    @DeleteMapping("/api/meicanAccount/removeAccountDishCheck")
+    public JsonResult<Boolean> removeAccountDishCheck(@RequestParam Long checkId){
+        return JsonResult.get(meicanAccountDishCheckService.removeById(checkId));
+    }
 }

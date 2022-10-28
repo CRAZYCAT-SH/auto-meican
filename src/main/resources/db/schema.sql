@@ -23,3 +23,13 @@ CREATE TABLE `meican_booking`
     `update_date`             timestamp   NULL     DEFAULT CURRENT_TIMESTAMP,
     `deleted`                 int(2)               DEFAULT '0'
 );
+
+CREATE TABLE `meican_account_dish_check`
+(
+    `uid`                     bigint(20)  NOT NULL primary key,
+    `account_name`            varchar(64) NOT NULL,
+    `expire_date`              varchar(64) NOT NULL,
+    `create_date`             timestamp   NULL     DEFAULT CURRENT_TIMESTAMP,
+    `update_date`             timestamp   NULL     DEFAULT CURRENT_TIMESTAMP,
+    `deleted`                 int(2)               DEFAULT '0'
+);
