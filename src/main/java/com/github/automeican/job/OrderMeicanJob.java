@@ -6,6 +6,7 @@ import com.github.automeican.common.TaskStatus;
 import com.github.automeican.dao.entity.MeicanBooking;
 import com.github.automeican.dao.service.IMeicanBookingService;
 import com.github.automeican.remote.MeicanClient;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -24,13 +25,10 @@ import java.util.List;
  * @Date 2022/9/23 16:08
  * @Version 1.0
  **/
+@AllArgsConstructor
 @Slf4j
-@Component
 public class OrderMeicanJob extends QuartzJobBean {
-    @Resource
     private IMeicanBookingService meicanBookingService;
-
-    @Resource
     private MeicanClient meicanClient;
 
 

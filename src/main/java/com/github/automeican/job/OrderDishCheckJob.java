@@ -8,13 +8,12 @@ import com.github.automeican.dao.entity.MeicanBooking;
 import com.github.automeican.dao.service.IMeicanAccountDishCheckService;
 import com.github.automeican.dao.service.IMeicanBookingService;
 import com.github.automeican.remote.MeicanClient;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.scheduling.quartz.QuartzJobBean;
-import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -28,19 +27,14 @@ import java.util.Random;
  * @Date 2022/10/28 16:06
  * @Version 1.0
  **/
+
+@AllArgsConstructor
 @Slf4j
-@Component
 public class OrderDishCheckJob extends QuartzJobBean {
-    private Random random = new Random();
-
-
-    @Resource
+    private static final Random RANDOM = new Random();
     private MeicanClient meicanClient;
-    @Resource
     private IMeicanAccountDishCheckService meicanAccountDishCheckService;
-    @Resource
     private IMeicanBookingService meicanBookingService;
-
 
     @Override
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
@@ -64,7 +58,7 @@ public class OrderDishCheckJob extends QuartzJobBean {
             if (CollectionUtils.isEmpty(dishList)) {//今天没菜
                 continue;
             }
-            String dish = dishList.get(random.nextInt(dishList.size()));//随机点菜
+            String dish = dishList.get(RANDOM.nextInt(dishList.size()));//随机点菜
             meicanBookingService.save(MeicanBooking.builder()
                     .accountName(accountName)
                     .orderDate(today)
