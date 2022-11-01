@@ -34,15 +34,9 @@ class AutoMeicanApplicationTests {
     void test() {
     }
 
-////        param.setUsername("18762036036@shinho.net.cn");
-////        param.setPassword("Shinho123");
-////        param.setUsername("13918961790@shinho.net.cn");
-////        param.setPassword("Shinho123");
-//        param.setMeicanAccountName("13764723439@shinho.net.cn");
-//        param.setMeicanAccountPassword("123456");
     @Test
     void test1() {
-        System.out.println(meicanClient.currentDishList(null,"2022-10-30"));
+        System.out.println(meicanClient.currentDishList(null,"2022-11-01"));
     }
 
 

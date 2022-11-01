@@ -68,9 +68,9 @@ public class AuthService {
         }
         if (StringUtils.hasText(account.getAccountCookie())) {//有cookie走cookie
             requestAuthByRemember(account);
-        }else if(StringUtils.hasText(account.getAccountPassword())){//密码验证
+        } else if (StringUtils.hasText(account.getAccountPassword())) {//密码验证
             requestAuth(account);
-        }else {
+        } else {
             throw new RuntimeException("账号未配置完整，请先配置您的美餐账号");
         }
         return TOKEN_CACHE_MANAGER.get(username);
@@ -100,11 +100,11 @@ public class AuthService {
             Date expire = new Date(System.currentTimeMillis() + (expiresIn * 1000L) - 5000L);
             String access_token = tokenResponse.getAccess_token();
             List<String> list = responseEntity.getHeaders().get("set-cookie");
-            String remember = Objects.requireNonNull(list).stream().filter(e -> e.contains("remember")).findFirst().orElseThrow(()->new RuntimeException("获取cookie失败"));
-            log.info("获取到cookie信息:[{}]",remember);
+            String remember = Objects.requireNonNull(list).stream().filter(e -> e.contains("remember")).findFirst().orElseThrow(() -> new RuntimeException("获取cookie失败"));
+            log.info("获取到cookie信息:[{}]", remember);
             remember = remember.split(";")[0];
             meicanAccountService.updateById(MeicanAccount.builder().uid(param.getUid()).accountCookie(remember).updateDate(new Date()).build());
-            TOKEN_CACHE_MANAGER.put(param.getAccountName(), new AuthInfo(access_token,remember), expire);
+            TOKEN_CACHE_MANAGER.put(param.getAccountName(), new AuthInfo(access_token, remember), expire);
         } else {
             throw new RuntimeException("请求token异常" + responseEntity);
         }
@@ -124,20 +124,31 @@ public class AuthService {
             Date expire = new Date(System.currentTimeMillis() + (3000L * 1000L));
             Matcher m = TOKEN_PATTERN.matcher(indexHtml);
             String token = null;
-            while (m.find()){
-                 token = m.group();
+            while (m.find()) {
+                token = m.group();
             }
             if (token == null) {
-                log.warn("cookie 可能已失效,将尝试密码登陆 :[{}]",param);
-                if(StringUtils.hasText(param.getAccountPassword())){//密码验证
+                if (StringUtils.hasText(param.getAccountPassword())) {//密码验证
+                    log.warn("cookie 可能已失效,将尝试密码登陆 :[{}]", param);
                     requestAuth(param);
                     return;
                 }
                 throw new RuntimeException("未找到首页token数据");
             }
-            log.info("获取到token信息：[{}]",token);
-            JSONObject tokenJson = JSON.parseObject(token);
-            TOKEN_CACHE_MANAGER.put(param.getAccountName(), new AuthInfo(tokenJson.getString("accessToken"),param.getAccountCookie()), expire);
+            log.info("获取到token信息：[{}]", token);
+            try {
+                token = token.replaceAll(",x:a", "");
+                JSONObject tokenJson = JSON.parseObject(token);
+                TOKEN_CACHE_MANAGER.put(param.getAccountName(), new AuthInfo(tokenJson.getString("accessToken"), param.getAccountCookie()), expire);
+            } catch (Exception e) {
+                log.error("token 解析异常", e);
+                if (StringUtils.hasText(param.getAccountPassword())) {//密码验证
+                    log.warn("token 解析异常,将尝试密码登陆 :[{}]", param);
+                    requestAuth(param);
+                    return;
+                }
+                throw new RuntimeException("token 解析异常", e);
+            }
         } else {
             throw new RuntimeException("请求首页异常" + responseEntity);
         }
