@@ -36,7 +36,7 @@ class AutoMeicanApplicationTests {
 
     @Test
     void test1() {
-        System.out.println(meicanClient.currentDishList(null,"2022-11-01"));
+        System.out.println(meicanClient.currentDishList(null,"2023-07-21"));
     }
 
 

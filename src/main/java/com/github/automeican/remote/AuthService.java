@@ -42,7 +42,8 @@ import java.util.regex.Pattern;
 public class AuthService {
     private static final CacheManager<String, AuthInfo> TOKEN_CACHE_MANAGER = new CacheManager<>();
 
-    private static final Pattern TOKEN_PATTERN = Pattern.compile("\\{accessToken:\"(.*?)\\}");
+//    private static final Pattern TOKEN_PATTERN = Pattern.compile("\\{accessToken:\"(.*?)\\}");
+    private static final Pattern TOKEN_PATTERN_V2 = Pattern.compile("accessToken:\\s*\"(.*?)\"");
 
     @Resource
     protected MeicanConfigProperties configProperties;
@@ -122,7 +123,7 @@ public class AuthService {
         if (responseEntity.getStatusCode().is2xxSuccessful()) {
             String indexHtml = Objects.requireNonNull(responseEntity.getBody(), "获取index body 异常");
             Date expire = new Date(System.currentTimeMillis() + (3000L * 1000L));
-            Matcher m = TOKEN_PATTERN.matcher(indexHtml);
+            Matcher m = TOKEN_PATTERN_V2.matcher(indexHtml);
             String token = null;
             while (m.find()) {
                 token = m.group();
@@ -137,9 +138,8 @@ public class AuthService {
             }
             log.info("获取到token信息：[{}]", token);
             try {
-                token = token.replaceAll(",x:a", "");
-                JSONObject tokenJson = JSON.parseObject(token);
-                TOKEN_CACHE_MANAGER.put(param.getAccountName(), new AuthInfo(tokenJson.getString("accessToken"), param.getAccountCookie()), expire);
+                token = token.replaceAll("accessToken:\\s*\"(?<segment>.*)\"", "${segment}");
+                TOKEN_CACHE_MANAGER.put(param.getAccountName(), new AuthInfo(token, param.getAccountCookie()), expire);
             } catch (Exception e) {
                 log.error("token 解析异常", e);
                 if (StringUtils.hasText(param.getAccountPassword())) {//密码验证
