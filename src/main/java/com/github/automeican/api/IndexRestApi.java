@@ -18,6 +18,7 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -78,7 +79,11 @@ public class IndexRestApi {
         task.setOrderStatus(TaskStatus.INIT.name());
         task.setCreateDate(new Date());
         task.setUpdateDate(new Date());
-        return JsonResult.get(meicanBookingService.save(task));
+        final boolean save = meicanBookingService.save(task);
+        if (task.getOrderDate().equals(LocalDate.now().toString())) {
+            return doTask(task.getUid());
+        }
+        return JsonResult.get(save);
     }
 
     @ApiOperation("更新美餐预定任务")

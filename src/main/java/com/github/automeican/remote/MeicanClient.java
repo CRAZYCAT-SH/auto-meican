@@ -1,6 +1,7 @@
 package com.github.automeican.remote;
 
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.github.automeican.common.CacheManager;
 import com.github.automeican.config.MeicanConfigProperties;
 import com.github.automeican.dao.entity.MeicanBooking;
 import com.github.automeican.dto.*;
@@ -17,6 +18,7 @@ import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,6 +34,7 @@ import java.util.stream.Collectors;
 public class MeicanClient {
     private static final String OPEN_STATUS = "AVAILABLE";
     public static final String SUCCESS_ORDER = "SUCCESSFUL";
+    private static final CacheManager<String, List<String>> DISH_CACHE_MANAGER = new CacheManager<>();
     @Resource
     private MeicanConfigProperties meicanConfigProperties;
     @Resource
@@ -84,13 +87,20 @@ public class MeicanClient {
         if (!StringUtils.hasText(date)) {
             date = LocalDate.now().plusDays(1).toString();
         }
+        final String key = account + date;
+        final List<String> data = DISH_CACHE_MANAGER.get(key);
+        if (CollectionUtils.isNotEmpty(data)) {
+            return data;
+        }
         try {
             List<CalendarItemsResponse> calendars = getCalendar(account, date);
             CalendarItemsResponse calendar = calendars.stream().filter(e -> "欣和企业午餐".equals(e.getTitle())).findFirst()
                     .orElse(null);
             if (calendar != null) {
                 List<DishesResponse> dishes = getDishes(account, calendar);
-                return dishes.stream().map(DishesResponse::getName).collect(Collectors.toList());
+                final List<String> dishList = dishes.stream().map(DishesResponse::getName).collect(Collectors.toList());
+                DISH_CACHE_MANAGER.put(key,dishList,new Date(System.currentTimeMillis() + (6 * 60 * 60 * 1000L)));
+                return dishList;
             }
         } catch (Exception e) {
             log.error("获取菜品失败",e);

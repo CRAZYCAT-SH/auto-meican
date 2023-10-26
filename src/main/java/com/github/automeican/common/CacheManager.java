@@ -4,8 +4,8 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.Date;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @ClassName CacheManager
@@ -14,19 +14,32 @@ import java.util.concurrent.ConcurrentMap;
  * @Date 2022/9/22 16:49
  * @Version 1.0
  **/
-public class CacheManager<K,V> {
-    private final ConcurrentMap<K,Node<V>> cache = new ConcurrentHashMap<>(500);
+public class CacheManager<K, V> {
+    private final Map<K, Node<V>> cache;
 
-    public Node<V> put(K key, V value, Date expire){
+    public CacheManager() {
+        this(500);
+    }
+
+    public CacheManager(int capacity) {
+        this.cache = new LinkedHashMap<K, Node<V>>(capacity, 0.75f, true) {
+            @Override
+            protected boolean removeEldestEntry(Map.Entry eldest) {
+                return size() > capacity;
+            }
+        };
+    }
+
+    public Node<V> put(K key, V value, Date expire) {
         return cache.put(key, Node.<V>builder().data(value).expire(expire).build());
     }
 
-    public V get(K key){
+    public V get(K key) {
         Node<V> node = cache.get(key);
         if (node != null) {
             if (node.getExpire().after(new Date())) {
                 return node.getData();
-            }else {
+            } else {
                 cache.remove(key);
             }
         }
