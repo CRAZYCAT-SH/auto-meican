@@ -39,7 +39,7 @@ public class AccountRestApi {
     @ApiOperation("获取所有已配置美餐账号")
     @GetMapping("/api/meicanAccount/listAll")
     public JsonResult<List<MeicanAccount>> listAll(){
-        return JsonResult.get(meicanAccountService.list());
+        return JsonResult.get(meicanAccountService.list(Wrappers.lambdaQuery(MeicanAccount.class).select(MeicanAccount::getUid,MeicanAccount::getAccountName)));
     }
 
     @ApiOperation("添加并验证美餐账号")
