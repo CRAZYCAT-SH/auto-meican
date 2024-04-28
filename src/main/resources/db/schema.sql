@@ -33,3 +33,5 @@ CREATE TABLE `meican_account_dish_check`
     `update_date`             timestamp   NULL     DEFAULT CURRENT_TIMESTAMP,
     `deleted`                 int(2)               DEFAULT '0'
 );
+
+alter table meican_account_dish_check add column no_order_dishes varchar(2048);

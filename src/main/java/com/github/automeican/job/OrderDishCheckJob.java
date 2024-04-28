@@ -15,9 +15,8 @@ import org.quartz.JobExecutionException;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName OrderDishCheckJob
@@ -43,6 +42,13 @@ public class OrderDishCheckJob extends QuartzJobBean {
         for (MeicanAccountDishCheck dishCheck : dishChecks) {
             String expireDate = dishCheck.getExpireDate();
             String accountName = dishCheck.getAccountName();
+            final Set<String> blackDishes = Optional.ofNullable(dishCheck.getNoOrderDishes())
+                    .map(e -> e.replace("，",","))
+                    .map(e -> e.replace("\n",","))
+                    .map(e -> e.split(","))
+                    .map(Arrays::stream)
+                    .map(e -> e.collect(Collectors.toSet()))
+                    .orElse(Collections.emptySet());
             LocalDate expire = LocalDate.parse(expireDate);
             if (expire.isBefore(LocalDate.now())) {//设置点餐检查已过期
                 continue;
@@ -59,6 +65,9 @@ public class OrderDishCheckJob extends QuartzJobBean {
                 continue;
             }
             String dish = dishList.get(RANDOM.nextInt(dishList.size()));//随机点菜
+            while (matchAny(blackDishes,dish)){
+                dish = dishList.get(RANDOM.nextInt(dishList.size()));//随机点菜
+            }
             meicanBookingService.save(MeicanBooking.builder()
                     .accountName(accountName)
                     .orderDate(today)
@@ -69,5 +78,14 @@ public class OrderDishCheckJob extends QuartzJobBean {
                     .build()
             );
         }
+    }
+
+    private boolean matchAny(Set<String> blackDishes, String dish) {
+        for (String blackDish : blackDishes) {
+            if (dish.contains(blackDish)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
