@@ -113,6 +113,7 @@ public class IndexRestApi {
             log.error("执行异常", e);
             meicanTask.setOrderStatus(TaskStatus.FAIL.name());
             meicanTask.setUpdateDate(new Date());
+            meicanTask.setErrorMsg(e.getMessage());
             meicanBookingService.updateById(meicanTask);
             return JsonResult.get(HttpReturnEnums.SystemError, false, e.getMessage());
         }

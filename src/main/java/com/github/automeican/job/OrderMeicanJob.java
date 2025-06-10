@@ -43,7 +43,10 @@ public class OrderMeicanJob extends QuartzJobBean {
         if (CollectionUtils.isNotEmpty(list)) {
             for (MeicanBooking meicanTask : list) {
                 try {
-                    meicanClient.executeTask(meicanTask);
+                    String orderDish = meicanTask.getOrderDish();
+                    if (!"请假".equals(orderDish)) {// 请假直接跳过
+                        meicanClient.executeTask(meicanTask);
+                    }
                     meicanTask.setOrderStatus(TaskStatus.SUCCESS.name());
                     meicanTask.setErrorMsg("success");
                 } catch (Exception e) {
