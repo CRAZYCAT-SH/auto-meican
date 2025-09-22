@@ -16,10 +16,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -35,6 +32,7 @@ public class MeicanClient {
     private static final String OPEN_STATUS = "AVAILABLE";
     public static final String SUCCESS_ORDER = "SUCCESSFUL";
     private static final CacheManager<String, List<String>> DISH_CACHE_MANAGER = new CacheManager<>();
+    private static final Random RANDOM = new Random();
     @Resource
     private MeicanConfigProperties meicanConfigProperties;
     @Resource
@@ -64,9 +62,15 @@ public class MeicanClient {
         if (CollectionUtils.isEmpty(dishes)) {
             throw new RuntimeException("未找到点餐菜品");
         }
-        DishesResponse dish = dishes.stream().filter(e -> e.getName().contains(task.getOrderDish())).findFirst().orElse(dishes.get(0));
-        if (!dish.getName().contains(task.getOrderDish())) {
-            log.warn("未找到点餐菜品，默认选择了第一个菜品：" + dish.getName());
+        String originDish = task.getOrderDish();
+        if (originDish.startsWith("[auto]")) {
+            originDish = originDish.substring(6);
+        }
+        String finalOriginDish = originDish;
+        DishesResponse dish = dishes.stream().filter(e -> e.getName().contains(finalOriginDish)).findFirst().orElse(dishes.get(RANDOM.nextInt(dishes.size())));
+        if (!dish.getName().contains(finalOriginDish)) {
+            log.warn("未找到点餐菜品，随机选择了一个菜品：" + dish.getName());
+            task.setOrderDish("[miss]" + dish.getName());
         }
         OrdersAddRequest param = new OrdersAddRequest();
         param.setUsername(task.getAccountName());

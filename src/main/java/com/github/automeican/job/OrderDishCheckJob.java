@@ -71,7 +71,7 @@ public class OrderDishCheckJob extends QuartzJobBean {
             meicanBookingService.save(MeicanBooking.builder()
                     .accountName(accountName)
                     .orderDate(today)
-                    .orderDish(dish)
+                    .orderDish("[auto]"+dish)
                     .orderStatus(TaskStatus.INIT.name())
                     .createDate(new Date())
                     .updateDate(new Date())
