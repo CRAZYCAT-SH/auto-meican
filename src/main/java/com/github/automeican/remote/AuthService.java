@@ -10,6 +10,7 @@ import com.github.automeican.dao.service.IMeicanAccountService;
 import com.github.automeican.dto.BaseRequest;
 import com.github.automeican.dto.TokenResponse;
 import com.github.automeican.utils.ConvertUtil;
+import jakarta.annotation.Resource;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.SneakyThrows;
@@ -23,7 +24,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.Resource;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;

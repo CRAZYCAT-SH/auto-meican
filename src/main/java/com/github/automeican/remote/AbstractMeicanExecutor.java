@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;

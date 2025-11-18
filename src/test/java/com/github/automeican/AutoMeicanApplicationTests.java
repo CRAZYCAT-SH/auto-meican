@@ -11,7 +11,7 @@ import com.github.automeican.remote.MeicanClient;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.time.LocalDate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

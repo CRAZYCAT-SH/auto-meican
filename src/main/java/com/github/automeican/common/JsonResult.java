@@ -1,7 +1,7 @@
 package com.github.automeican.common;
 
 import com.alibaba.fastjson.JSON;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
 
@@ -14,14 +14,14 @@ import java.io.Serializable;
  **/
 public class JsonResult<T> implements Serializable {
     private static final long serialVersionUID = 1L;
-    @ApiModelProperty(
-            value = "状态码",
-            notes = "200是成功,其他都是失败"
+    @Schema(
+            description = "状态码",
+            example = "200"
     )
     private int code;
-    @ApiModelProperty("状态码描述信息")
+    @Schema(description = "状态码描述信息")
     private String msg;
-    @ApiModelProperty("具体的业务数据模型")
+    @Schema(description = "具体的业务数据模型")
     private T data;
 
     public JsonResult() {

@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.github.automeican.common.BigIdSerializer;
-import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,7 +23,6 @@ import java.util.Date;
 @Getter
 @Setter
 @TableName("meican_account_dish_check")
-@ApiModel(value = "MeicanAccountDishCheck对象", description = "")
 public class MeicanAccountDishCheck implements Serializable {
 
     private static final long serialVersionUID = 1L;
