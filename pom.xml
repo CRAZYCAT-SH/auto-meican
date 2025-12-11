@@ -19,11 +19,22 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.ai</groupId>
+                <artifactId>spring-ai-bom</artifactId>
+                <version>1.1.2</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.75</version>
+            <version>1.2.83</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -70,6 +81,30 @@
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>2.8.14</version>
+            <exclusions>
+                <!--
+                Apache Commons Lang中存在不受控制的递归漏洞。
+                此问题影响Apache Commons Lang：
+                从Commons Lang:coms Lang 2.0到2.6，
+                以及从org.Apache.Commons:Commons-lang3 3.0到3.18.0。
+                ClassUtils.getClass（…）方法可以在非常长的输入上抛出StackOverflowError。
+                因为应用程序和库通常不会处理错误，所以StackOverflowError可能会导致应用程序停止。
+                建议用户升级到3.18.0版本，该版本修复了此问题。
+                -->
+                <exclusion>
+                    <groupId>commons-lang</groupId>
+                    <artifactId>commons-lang</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.18.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-starter-mcp-server-webmvc</artifactId>
         </dependency>
     </dependencies>
 

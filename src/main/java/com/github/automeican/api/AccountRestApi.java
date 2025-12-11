@@ -45,7 +45,6 @@ public class AccountRestApi {
     @Operation(summary = "添加并验证美餐账号")
     @PostMapping("/api/meicanAccount/addAccount")
     public JsonResult<Boolean> addAccount(@RequestBody MeicanAccount account){
-        meicanAccountService.remove(Wrappers.<MeicanAccount>lambdaQuery().eq(MeicanAccount::getAccountName,account.getAccountName()));
         return JsonResult.get(meicanAccountManagerService.saveAndAuth(account));
     }
 

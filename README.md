@@ -1,10 +1,16 @@
 # auto-meican
 美餐提前预定神器
 
-## 临时服务器文档地址：
-```text
-http://120.78.181.102:8080/doc.html#/home
+## 美餐MCP 服务器
 ```
+url
+http://localhost(替换为你的服务器地址):8080/sse
+
+请求头
+Content-Type=application/json
+Authorization=Bearer xxx(替换为你的美餐账号)
+```
+
 ## 点餐流程
 1,配置账号
 请求添加美餐账号接口: 

@@ -1,5 +1,6 @@
 package com.github.automeican.service;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.automeican.dao.entity.MeicanAccount;
 import com.github.automeican.dao.service.IMeicanAccountService;
 import com.github.automeican.dto.BaseRequest;
@@ -27,10 +28,15 @@ public class MeicanAccountManagerService {
 
     @Transactional(rollbackFor = Exception.class)
     public boolean saveAndAuth(MeicanAccount account) {
-        meicanAccountService.save(account);
+        MeicanAccount meicanAccount = meicanAccountService.getOne(Wrappers.<MeicanAccount>lambdaQuery().eq(MeicanAccount::getAccountName, account.getAccountName()));
+        if (meicanAccount != null) {
+            account.setUid(meicanAccount.getUid());
+        }
+        meicanAccountService.saveOrUpdate(account);
         BaseRequest param = new BaseRequest();
         param.setUsername(account.getAccountName());
         authService.auth(param);
+        log.info("账号{}授权成功", account.getAccountName());
         return true;
     }
 }

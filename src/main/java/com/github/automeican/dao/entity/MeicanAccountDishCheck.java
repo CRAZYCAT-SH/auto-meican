@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.github.automeican.common.BigIdSerializer;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,6 +21,8 @@ import java.util.Date;
  * @author liyongbing
  * @since 2022-10-28
  */
+
+@Builder
 @Getter
 @Setter
 @TableName("meican_account_dish_check")
