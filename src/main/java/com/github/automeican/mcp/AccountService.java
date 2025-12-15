@@ -55,7 +55,7 @@ public class AccountService {
 
     @Tool(description = "更新当前自动点餐配置")
     public JsonResult<Boolean> updateAutoEatConfig(@ToolParam(description = "自动点餐有效期,格式：yyyy-MM-dd") String date,
-                                                   @ToolParam(description = "自动点餐黑名单") String blackList) {
+                                                   @ToolParam(description = "自动点餐黑名单,多个黑名单使用,分隔") String blackList) {
 
         log.info("更新当前自动点餐配置");
         String account = AccountContextHolder.getAccount();
