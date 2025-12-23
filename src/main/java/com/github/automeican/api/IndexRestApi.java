@@ -134,7 +134,8 @@ public class IndexRestApi {
     @Operation(summary = "推荐菜品")
     @GetMapping("/api/meicanTask/recommendDish")
     public JsonResult<AiDishResult> recommendDish(@RequestParam String accountName,
-                                                  @RequestParam String orderDate) {
+                                                  @RequestParam String orderDate,
+                                                  @RequestParam(required = false,defaultValue = "") String recentRecommend) {
         UserPreference preference = new UserPreference();
         preference.setAccountName(accountName);
         preference.setOrderDate(orderDate);
@@ -151,6 +152,7 @@ public class IndexRestApi {
             preference.setRestrictions(List.of(dishCheck.getRestrictions().split(",")));
             preference.setLikes(List.of(dishCheck.getLikes().split(",")));
         }
+        preference.setRecentDishes(List.of(recentRecommend.split(",")));
         return JsonResult.get(dishRecommender.recommend(preference));
     }
 

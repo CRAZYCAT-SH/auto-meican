@@ -52,6 +52,7 @@ public class DishRecommender {
         // 1. 配置选项
         var options = DeepSeekChatOptions.builder()
                 .model("deepseek-chat")
+                .temperature(1.35)
                 .responseFormat(ResponseFormat.builder().type(ResponseFormat.Type.JSON_OBJECT).build())
                 .toolCallbacks(List.of(
                         FunctionToolCallback
@@ -83,12 +84,14 @@ public class DishRecommender {
                         用户偏好：%s
                         忌口：%s
                         黑名单：%s
-                        请调用函数查询并返回推荐最匹配的一个结果""",
+                        近期已点菜品：%s
+                        请调用函数查询并返回推荐最匹配并且最好避免与近期已点菜品重复的一个结果""",
                 pref.getAccountName(),
                 pref.getOrderDate(),
                 String.join(",", pref.getLikes()),
                 String.join(",", pref.getRestrictions()),
-                String.join(",", pref.getBlacklist())
+                String.join(",", pref.getBlacklist()),
+                String.join(",", pref.getRecentDishes())
         );
     }
 }

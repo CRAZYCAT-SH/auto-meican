@@ -17,6 +17,8 @@ public class UserPreference {
     private List<String> restrictions;
     @Schema(description = "用户黑名单")
     private List<String> blacklist;
+    @Schema(description = "近期已点菜品")
+    private List<String> recentDishes;
     @Schema(description = "用户名")
     private String accountName;
     @Schema(description = "预约日期")

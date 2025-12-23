@@ -1,7 +1,5 @@
 package com.github.automeican.job;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.automeican.common.DishRecommender;
@@ -22,7 +20,6 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -62,6 +59,10 @@ public class OrderDishCheckJob extends QuartzJobBean {
             if (count > 0) {//今日已点餐
                 continue;
             }
+            List<String> dishList = meicanClient.currentDishList(accountName, today);
+            if (CollectionUtils.isEmpty(dishList)) {//今天没菜
+                continue;
+            }
             AiDishResult aiDishResult = aiSelectDish(today, dishCheck);
             if (aiDishResult != null && StringUtils.isNotEmpty(aiDishResult.getDishName())) {
                 meicanBookingService.save(MeicanBooking.builder()
@@ -75,10 +76,6 @@ public class OrderDishCheckJob extends QuartzJobBean {
                         .build()
                 );
                 return;
-            }
-            List<String> dishList = meicanClient.currentDishList(accountName, today);
-            if (CollectionUtils.isEmpty(dishList)) {//今天没菜
-                continue;
             }
             String dish = dishList.get(RANDOM.nextInt(dishList.size()));//随机点菜
             while (matchAny(blackDishes,dish)){
@@ -97,12 +94,14 @@ public class OrderDishCheckJob extends QuartzJobBean {
     }
 
     private AiDishResult aiSelectDish(String today, MeicanAccountDishCheck dishCheck) {
+        List<String> meicanBookings = meicanBookingService.recentSuccessBooking(dishCheck.getAccountName(), 5);
         UserPreference userPreference = UserPreference.builder()
                 .accountName(dishCheck.getAccountName())
                 .orderDate(today)
                 .likes(convertSettings(dishCheck.getLikes()))
                 .restrictions(convertSettings(dishCheck.getRestrictions()))
                 .blacklist(convertSettings(dishCheck.getNoOrderDishes()))
+                .recentDishes(meicanBookings)
                 .build();
         try {
             return dishRecommender.recommend(userPreference);
