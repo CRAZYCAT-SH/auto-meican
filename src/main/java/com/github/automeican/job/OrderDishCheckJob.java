@@ -1,15 +1,21 @@
 package com.github.automeican.job;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.github.automeican.common.DishRecommender;
 import com.github.automeican.common.TaskStatus;
 import com.github.automeican.dao.entity.MeicanAccountDishCheck;
 import com.github.automeican.dao.entity.MeicanBooking;
 import com.github.automeican.dao.service.IMeicanAccountDishCheckService;
 import com.github.automeican.dao.service.IMeicanBookingService;
+import com.github.automeican.dto.AiDishResult;
+import com.github.automeican.dto.UserPreference;
 import com.github.automeican.remote.MeicanClient;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.scheduling.quartz.QuartzJobBean;
@@ -17,6 +23,7 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @ClassName OrderDishCheckJob
@@ -34,6 +41,7 @@ public class OrderDishCheckJob extends QuartzJobBean {
     private MeicanClient meicanClient;
     private IMeicanAccountDishCheckService meicanAccountDishCheckService;
     private IMeicanBookingService meicanBookingService;
+    private DishRecommender dishRecommender;
 
     @Override
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
@@ -42,13 +50,7 @@ public class OrderDishCheckJob extends QuartzJobBean {
         for (MeicanAccountDishCheck dishCheck : dishChecks) {
             String expireDate = dishCheck.getExpireDate();
             String accountName = dishCheck.getAccountName();
-            final Set<String> blackDishes = Optional.ofNullable(dishCheck.getNoOrderDishes())
-                    .map(e -> e.replace("，",","))
-                    .map(e -> e.replace("\n",","))
-                    .map(e -> e.split(","))
-                    .map(Arrays::stream)
-                    .map(e -> e.collect(Collectors.toSet()))
-                    .orElse(Collections.emptySet());
+            final List<String> blackDishes = convertSettings(dishCheck.getNoOrderDishes());
             LocalDate expire = LocalDate.parse(expireDate);
             if (expire.isBefore(LocalDate.now())) {//设置点餐检查已过期
                 continue;
@@ -59,6 +61,20 @@ public class OrderDishCheckJob extends QuartzJobBean {
             );
             if (count > 0) {//今日已点餐
                 continue;
+            }
+            AiDishResult aiDishResult = aiSelectDish(today, dishCheck);
+            if (aiDishResult != null && StringUtils.isNotEmpty(aiDishResult.getDishName())) {
+                meicanBookingService.save(MeicanBooking.builder()
+                        .accountName(accountName)
+                        .orderDate(today)
+                        .orderDish("[auto]"+aiDishResult.getDishName())
+                        .selectReason(aiDishResult.getSelectReason())
+                        .orderStatus(TaskStatus.INIT.name())
+                        .createDate(new Date())
+                        .updateDate(new Date())
+                        .build()
+                );
+                return;
             }
             List<String> dishList = meicanClient.currentDishList(accountName, today);
             if (CollectionUtils.isEmpty(dishList)) {//今天没菜
@@ -80,7 +96,33 @@ public class OrderDishCheckJob extends QuartzJobBean {
         }
     }
 
-    private boolean matchAny(Set<String> blackDishes, String dish) {
+    private AiDishResult aiSelectDish(String today, MeicanAccountDishCheck dishCheck) {
+        UserPreference userPreference = UserPreference.builder()
+                .accountName(dishCheck.getAccountName())
+                .orderDate(today)
+                .likes(convertSettings(dishCheck.getLikes()))
+                .restrictions(convertSettings(dishCheck.getRestrictions()))
+                .blacklist(convertSettings(dishCheck.getNoOrderDishes()))
+                .build();
+        try {
+            return dishRecommender.recommend(userPreference);
+        } catch (Exception e) {
+            log.error("推荐菜失败",e);
+        }
+        return null;
+    }
+
+    private static List<String> convertSettings(String settings) {
+        return Optional.ofNullable(settings)
+                .map(e -> e.replace("，", ","))
+                .map(e -> e.replace("\n", ","))
+                .map(e -> e.split(","))
+                .map(Arrays::stream)
+                .map(Stream::toList)
+                .orElse(Collections.emptyList());
+    }
+
+    private boolean matchAny(Collection<String> blackDishes, String dish) {
         for (String blackDish : blackDishes) {
             if (dish.contains(blackDish)) {
                 return true;

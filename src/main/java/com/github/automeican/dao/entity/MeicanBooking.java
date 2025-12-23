@@ -44,6 +44,8 @@ public class MeicanBooking implements Serializable {
 
     private String errorMsg;
 
+    private String selectReason;
+
     private Date createDate;
 
     private Date updateDate;

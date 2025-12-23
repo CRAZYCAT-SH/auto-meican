@@ -4,11 +4,16 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.automeican.api.dto.MeicanBookingQuery;
+import com.github.automeican.common.DishRecommender;
 import com.github.automeican.common.HttpReturnEnums;
 import com.github.automeican.common.JsonResult;
 import com.github.automeican.common.TaskStatus;
+import com.github.automeican.dao.entity.MeicanAccountDishCheck;
 import com.github.automeican.dao.entity.MeicanBooking;
+import com.github.automeican.dao.service.IMeicanAccountDishCheckService;
 import com.github.automeican.dao.service.IMeicanBookingService;
+import com.github.automeican.dto.AiDishResult;
+import com.github.automeican.dto.UserPreference;
 import com.github.automeican.remote.MeicanClient;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,8 +45,15 @@ public class IndexRestApi {
 
     @Resource
     private IMeicanBookingService meicanBookingService;
+
+    @Resource
+    private IMeicanAccountDishCheckService meicanAccountDishCheckService;
+
     @Resource
     private MeicanClient meicanClient;
+
+    @Resource
+    private DishRecommender dishRecommender;
 
 
     @Operation(summary = "分页查询美餐预定任务")
@@ -118,5 +130,29 @@ public class IndexRestApi {
         }
         return JsonResult.get(true);
     }
+
+    @Operation(summary = "推荐菜品")
+    @GetMapping("/api/meicanTask/recommendDish")
+    public JsonResult<AiDishResult> recommendDish(@RequestParam String accountName,
+                                                  @RequestParam String orderDate) {
+        UserPreference preference = new UserPreference();
+        preference.setAccountName(accountName);
+        preference.setOrderDate(orderDate);
+        MeicanAccountDishCheck dishCheck = meicanAccountDishCheckService.getOne(
+                Wrappers.<MeicanAccountDishCheck>lambdaQuery()
+                        .eq(MeicanAccountDishCheck::getAccountName, accountName)
+        );
+        if (dishCheck == null || dishCheck.getExpireDate().compareTo(LocalDate.now().toString()) < 0) {
+            preference.setBlacklist(List.of("无"));
+            preference.setRestrictions(List.of("无"));
+            preference.setLikes(List.of("无"));
+        }else {
+            preference.setBlacklist(List.of(dishCheck.getNoOrderDishes().split(",")));
+            preference.setRestrictions(List.of(dishCheck.getRestrictions().split(",")));
+            preference.setLikes(List.of(dishCheck.getLikes().split(",")));
+        }
+        return JsonResult.get(dishRecommender.recommend(preference));
+    }
+
 
 }

@@ -39,6 +39,10 @@ public class MeicanAccountDishCheck implements Serializable {
 
     private String noOrderDishes;
 
+    private String likes;
+
+    private String restrictions;
+
     private Date createDate;
 
     private Date updateDate;

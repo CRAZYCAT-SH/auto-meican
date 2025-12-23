@@ -35,3 +35,9 @@ CREATE TABLE `meican_account_dish_check`
 );
 
 alter table meican_account_dish_check add column no_order_dishes varchar(2048);
+
+
+alter table meican_account_dish_check add column likes varchar(2048);
+alter table meican_account_dish_check add column restrictions varchar(2048);
+
+alter table meican_booking add column select_reason varchar(1024);
