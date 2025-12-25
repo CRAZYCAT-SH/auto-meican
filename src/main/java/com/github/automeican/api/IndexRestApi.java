@@ -13,6 +13,7 @@ import com.github.automeican.dao.entity.MeicanBooking;
 import com.github.automeican.dao.service.IMeicanAccountDishCheckService;
 import com.github.automeican.dao.service.IMeicanBookingService;
 import com.github.automeican.dto.AiDishResult;
+import com.github.automeican.dto.DishesResponse;
 import com.github.automeican.dto.UserPreference;
 import com.github.automeican.remote.MeicanClient;
 import io.swagger.v3.oas.annotations.Operation;
@@ -77,7 +78,15 @@ public class IndexRestApi {
     @GetMapping("/api/meicanTask/dishList")
     public JsonResult<List<String>> dishList(@RequestParam(required = false) String accountName,
                                              @RequestParam(required = false) String date) {
-        return JsonResult.get(meicanClient.currentDishList(accountName,date));
+        List<DishesResponse> responses = meicanClient.currentDishList(accountName, date);
+        return JsonResult.get(responses.stream().map(DishesResponse::getName).toList());
+    }
+
+    @Operation(summary = "查询美餐餐厅菜品")
+    @GetMapping("/api/meicanTask/restaurantDishList")
+    public JsonResult<List<DishesResponse>> restaurantDishList(@RequestParam(required = false) String accountName,
+                                                     @RequestParam(required = false) String date) {
+        return JsonResult.get(meicanClient.currentDishList(accountName, date));
     }
 
     @Operation(summary = "添加美餐预定任务")

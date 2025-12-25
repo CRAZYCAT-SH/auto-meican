@@ -9,6 +9,7 @@ import com.github.automeican.dao.entity.MeicanBooking;
 import com.github.automeican.dao.service.IMeicanAccountDishCheckService;
 import com.github.automeican.dao.service.IMeicanBookingService;
 import com.github.automeican.dto.AiDishResult;
+import com.github.automeican.dto.DishesResponse;
 import com.github.automeican.dto.UserPreference;
 import com.github.automeican.remote.MeicanClient;
 import lombok.AllArgsConstructor;
@@ -59,7 +60,7 @@ public class OrderDishCheckJob extends QuartzJobBean {
             if (count > 0) {//今日已点餐
                 continue;
             }
-            List<String> dishList = meicanClient.currentDishList(accountName, today);
+            List<DishesResponse> dishList = meicanClient.currentDishList(accountName, today);
             if (CollectionUtils.isEmpty(dishList)) {//今天没菜
                 continue;
             }
@@ -77,9 +78,10 @@ public class OrderDishCheckJob extends QuartzJobBean {
                 );
                 return;
             }
-            String dish = dishList.get(RANDOM.nextInt(dishList.size()));//随机点菜
+            List<String> dishNameList = dishList.stream().map(DishesResponse::getName).toList();
+            String dish = dishNameList.get(RANDOM.nextInt(dishList.size()));//随机点菜
             while (matchAny(blackDishes,dish)){
-                dish = dishList.get(RANDOM.nextInt(dishList.size()));//随机点菜
+                dish = dishNameList.get(RANDOM.nextInt(dishList.size()));//随机点菜
             }
             meicanBookingService.save(MeicanBooking.builder()
                     .accountName(accountName)

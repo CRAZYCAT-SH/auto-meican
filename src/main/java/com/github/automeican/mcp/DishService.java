@@ -5,15 +5,10 @@ import com.github.automeican.common.AccountContextHolder;
 import com.github.automeican.common.HttpReturnEnums;
 import com.github.automeican.common.JsonResult;
 import com.github.automeican.common.TaskStatus;
-import com.github.automeican.dao.entity.MeicanAccount;
-import com.github.automeican.dao.entity.MeicanAccountDishCheck;
 import com.github.automeican.dao.entity.MeicanBooking;
-import com.github.automeican.dao.service.IMeicanAccountDishCheckService;
-import com.github.automeican.dao.service.IMeicanAccountService;
 import com.github.automeican.dao.service.IMeicanBookingService;
+import com.github.automeican.dto.DishesResponse;
 import com.github.automeican.remote.MeicanClient;
-import com.github.automeican.service.MeicanAccountManagerService;
-import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.tool.annotation.Tool;
@@ -49,7 +44,7 @@ public class DishService {
     }
 
     @Tool(description = "查询指定日期的美餐菜品")
-    public JsonResult<List<String>> dishList(@ToolParam(description = "查询日期,格式：yyyy-MM-dd") String date) {
+    public JsonResult<List<DishesResponse>> dishList(@ToolParam(description = "查询日期,格式：yyyy-MM-dd") String date) {
         String account = AccountContextHolder.getAccount();
         return JsonResult.get(meicanClient.currentDishList(account,date));
     }

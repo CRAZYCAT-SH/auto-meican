@@ -15,6 +15,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import jakarta.annotation.Resource;
+
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -31,7 +32,7 @@ import java.util.stream.Collectors;
 public class MeicanClient {
     private static final String OPEN_STATUS = "AVAILABLE";
     public static final String SUCCESS_ORDER = "SUCCESSFUL";
-    private static final CacheManager<String, List<String>> DISH_CACHE_MANAGER = new CacheManager<>();
+    private static final CacheManager<String, List<DishesResponse>> DISH_CACHE_MANAGER = new CacheManager<>();
     private static final Random RANDOM = new Random();
     @Resource
     private MeicanConfigProperties meicanConfigProperties;
@@ -84,15 +85,15 @@ public class MeicanClient {
         }
     }
 
-    public List<String> currentDishList(String account,String date) {
+    public List<DishesResponse> currentDishList(String account, String date) {
         if (!StringUtils.hasText(account)) {
             account = meicanConfigProperties.getSysAccount();
         }
         if (!StringUtils.hasText(date)) {
             date = LocalDate.now().plusDays(1).toString();
         }
-        final String key = account + date;
-        final List<String> data = DISH_CACHE_MANAGER.get(key);
+        final String key = "dish:" + account + date;
+        final List<DishesResponse> data = DISH_CACHE_MANAGER.get(key);
         if (CollectionUtils.isNotEmpty(data)) {
             return data;
         }
@@ -102,14 +103,13 @@ public class MeicanClient {
                     .orElse(null);
             if (calendar != null) {
                 List<DishesResponse> dishes = getDishes(account, calendar);
-                final List<String> dishList = dishes.stream().map(DishesResponse::getName).collect(Collectors.toList());
-                DISH_CACHE_MANAGER.put(key,dishList,new Date(System.currentTimeMillis() + (6 * 60 * 60 * 1000L)));
-                return dishList;
+                DISH_CACHE_MANAGER.put(key, dishes, new Date(System.currentTimeMillis() + (6 * 60 * 60 * 1000L)));
+                return dishes;
             }
         } catch (Exception e) {
-            log.error("获取菜品失败",e);
+            log.error("获取菜品失败", e);
         }
-        return Collections.singletonList("暂无可见菜品,随便点一个吧");
+        return Collections.emptyList();
     }
 
 
@@ -128,7 +128,18 @@ public class MeicanClient {
                 request.setTargetTime(calendar.getTargetTime());
                 request.setRestaurantUniqueId(response.getUniqueId());
                 List<DishesResponse> dishesResponses = restaurantsShowExecutor.execute(request);
-                result.addAll(dishesResponses.stream().filter(e -> !e.getDishSectionId().equals(e.getId())).collect(Collectors.toList()));
+                List<DishesResponse> list = new ArrayList<>();
+                for (DishesResponse e : dishesResponses) {
+                    if (!e.getIsSection()) {
+                        DishesResponse.Restaurant restaurant = new DishesResponse.Restaurant();
+                        restaurant.setName(response.getName());
+                        restaurant.setUniqueId(response.getUniqueId());
+                        restaurant.setOpen(response.getOpen());
+                        e.setRestaurant(restaurant);
+                        list.add(e);
+                    }
+                }
+                result.addAll(list);
             }
         }
         return result;
